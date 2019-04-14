@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: huhu-user-service
+  profiles:
+    active: dev
+
+  cloud:
+    nacos:
+      config:
+        server-addr: 47.94.156.44:8848
+        file-extension: yml
+        group: DEV_GROUP
+server:
+  port: 7000
+
+
+
+
+
