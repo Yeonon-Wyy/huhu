@@ -3,6 +3,7 @@ package top.yeonon.huhuuserservice.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.constants.ErrorMsg;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
@@ -45,7 +46,7 @@ public class UserService implements IUserService {
 
         User user = new User(
                 request.getUsername(),
-                request.getPassword(),
+                CommonUtils.md5(request.getPassword()),
                 request.getEmail()
         );
         user = userRepository.save(user);
