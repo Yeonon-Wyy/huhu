@@ -1,5 +1,6 @@
 package top.yeonon.huhuuserservice.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +13,17 @@ import top.yeonon.huhuuserservice.repository.UserFollowerRepository;
 import top.yeonon.huhuuserservice.repository.UserFollowingRepository;
 import top.yeonon.huhuuserservice.repository.UserRepository;
 import top.yeonon.huhuuserservice.service.IUserFollowService;
+import top.yeonon.huhuuserservice.vo.request.FollowerQueryRequestVo;
+import top.yeonon.huhuuserservice.vo.request.FollowingQueryRequestVo;
 import top.yeonon.huhuuserservice.vo.request.UserFollowRequestVo;
 import top.yeonon.huhuuserservice.vo.request.UserUnFollowRequestVo;
+import top.yeonon.huhuuserservice.vo.response.FollowerQueryResponseVo;
+import top.yeonon.huhuuserservice.vo.response.FollowingQueryResponseVo;
 import top.yeonon.huhuuserservice.vo.response.UserFollowResponseVo;
 import top.yeonon.huhuuserservice.vo.response.UserUnFollowResponseVo;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @Author yeonon
@@ -118,6 +126,36 @@ public class UserFollowService implements IUserFollowService {
         followUser.setFollowingCount(followUser.getFollowingCount() - 1);
         unFollowedUser.setFollowerCount(unFollowedUser.getFollowerCount() - 1);
         return new UserUnFollowResponseVo(followUser.getId());
+    }
+
+    @Override
+    public FollowerQueryResponseVo queryFollower(FollowerQueryRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+        //这里不检查传入的用户ID是否存在了，因为如果没有任何关注者，就不会存在记录，返回的内容也应该是空
+        List<UserFollower> userFollowers = userFollowerRepository.findByUserId(request.getId());
+        List<Long> followerIds = new LinkedList<>();
+        userFollowers.forEach(userFollower -> {
+            followerIds.add(userFollower.getFollowerId());
+        });
+        return new FollowerQueryResponseVo(followerIds);
+    }
+
+    @Override
+    public FollowingQueryResponseVo queryFollowing(FollowingQueryRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+        List<UserFollowing> userFollowings = userFollowingRepository.findByUserId(request.getId());
+        List<Long> followingIds = new LinkedList<>();
+        userFollowings.forEach(userFollowing -> {
+            followingIds.add(userFollowing.getFollowingId());
+        });
+
+        return new FollowingQueryResponseVo(followingIds);
     }
 
     /**

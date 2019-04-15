@@ -1,8 +1,14 @@
 package top.yeonon.huhuuserservice.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import top.yeonon.huhuuserservice.entity.User;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @Author yeonon
@@ -12,6 +18,9 @@ import top.yeonon.huhuuserservice.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsername(String username);
+
+    Page<User> findAllByIdIn(Collection<Long> ids, Pageable pageRequest);
+
 
 
 }

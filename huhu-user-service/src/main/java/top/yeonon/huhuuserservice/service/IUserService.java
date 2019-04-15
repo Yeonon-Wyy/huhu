@@ -56,5 +56,12 @@ public interface IUserService {
         throws HuhuException;
 
 
-
+    /**
+     * 批量获取用户信息（隐藏私密信息）
+     * @param request 请求对象
+     * @return 响应对象
+     * @throws HuhuException 可能抛出的异常
+     */
+    UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request)
+        throws HuhuException;
 }

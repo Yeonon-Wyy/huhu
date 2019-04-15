@@ -1,6 +1,10 @@
 package top.yeonon.huhuuserservice.service.impl;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhucommon.utils.CommonUtils;
@@ -15,6 +19,8 @@ import top.yeonon.huhuuserservice.repository.UserRepository;
 import top.yeonon.huhuuserservice.service.IUserService;
 import top.yeonon.huhuuserservice.vo.request.*;
 import top.yeonon.huhuuserservice.vo.response.*;
+
+import java.util.List;
 
 /**
  * @Author yeonon
@@ -130,6 +136,42 @@ public class UserService implements IUserService {
     @Override
     public UserLoginResponseVo login(UserLoginRequestVo request) throws HuhuException {
         return null;
+    }
+
+    @Override
+    public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+        //分页查询
+        Sort sort = new Sort(Sort.Direction.ASC, "id");
+        Page<User> userList = userRepository.findAllByIdIn(
+                request.getIds(),
+                PageRequest.of(request.getPageNum(),
+                request.getPageSize(), sort)
+        );
+
+        List<UserBatchQueryResponseVo.UserInfo> userInfoList = Lists.newLinkedList();
+        userList.forEach(user -> {
+            userInfoList.add(new UserBatchQueryResponseVo.UserInfo(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getAvatar(),
+                    user.getSex(),
+                    user.getAddress(),
+                    user.getFollowerCount(),
+                    user.getFollowingCount(),
+                    user.getProfile(),
+                    user.getIndustry()
+            ));
+        });
+
+        return new UserBatchQueryResponseVo(
+                userInfoList,
+                request.getPageNum(),
+                request.getPageSize()
+        );
     }
 
 

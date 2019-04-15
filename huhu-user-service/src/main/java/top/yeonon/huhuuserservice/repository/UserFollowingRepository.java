@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import top.yeonon.huhuuserservice.entity.UserFollowing;
 
+import java.util.List;
+
 /**
  * @Author yeonon
  * @date 2019/4/14 0014 17:06
@@ -14,4 +16,6 @@ public interface UserFollowingRepository extends JpaRepository<UserFollowing, Lo
     boolean existsByUserIdAndFollowingId(Long userId, Long followingId);
 
     void deleteByUserIdAndFollowingId(Long userId, Long followingId);
+
+    List<UserFollowing> findByUserId(Long userId);
 }

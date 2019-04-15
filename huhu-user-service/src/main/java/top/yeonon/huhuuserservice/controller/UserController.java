@@ -4,14 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuuserservice.service.IUserService;
-import top.yeonon.huhuuserservice.vo.request.UserDeleteRequestVo;
-import top.yeonon.huhuuserservice.vo.request.UserQueryRequestVo;
-import top.yeonon.huhuuserservice.vo.request.UserRegisterRequestVo;
-import top.yeonon.huhuuserservice.vo.request.UserUpdateRequestVo;
-import top.yeonon.huhuuserservice.vo.response.UserDeleteResponseVo;
-import top.yeonon.huhuuserservice.vo.response.UserQueryResponseVo;
-import top.yeonon.huhuuserservice.vo.response.UserRegisterResponseVo;
-import top.yeonon.huhuuserservice.vo.response.UserUpdateResponseVo;
+import top.yeonon.huhuuserservice.vo.request.*;
+import top.yeonon.huhuuserservice.vo.response.*;
 
 /**
  * @Author yeonon
@@ -52,4 +46,9 @@ public class UserController {
         return userService.deleteUser(request);
     }
 
+
+    @GetMapping("/batch/query")
+    public UserBatchQueryResponseVo batchQueryUserInfo(@RequestBody UserBatchQueryRequestVo request) throws HuhuException {
+        return userService.batchQueryUserInfo(request);
+    }
 }
