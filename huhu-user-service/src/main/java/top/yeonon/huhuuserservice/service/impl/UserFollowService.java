@@ -2,10 +2,12 @@ package top.yeonon.huhuuserservice.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuuserservice.constants.ErrorMsg;
+import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
 import top.yeonon.huhuuserservice.entity.UserFollower;
 import top.yeonon.huhuuserservice.entity.UserFollowing;
@@ -53,6 +55,11 @@ public class UserFollowService implements IUserFollowService {
         if (!request.validate()) {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
+        //检查合法性，不能代替他人关注用户
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!userRepository.existsByIdAndUsername(request.getUserId(), username)) {
+            throw new HuhuException(ErrorMsg.INVALID_FOLLOW_USER);
+        }
 
         if (request.getFollowUserId().equals(request.getUserId())) {
             throw new HuhuException(ErrorMsg.NOT_ALLOW_FOLLOW_YOURSELF);
@@ -62,7 +69,10 @@ public class UserFollowService implements IUserFollowService {
         User followUser = userRepository.findById(request.getUserId()).orElse(null);
         //获取被关注的用户对象
         User followedUser = userRepository.findById(request.getFollowUserId()).orElse(null);
-        if (followUser == null || followedUser == null) {
+        //还需要检查对方是否已经注销
+        if (followUser == null
+                || followedUser == null
+                || followedUser.getStatus().equals(UserStatus.CLOSE.getCode())) {
             throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
         }
 
@@ -101,10 +111,18 @@ public class UserFollowService implements IUserFollowService {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
+        //检查合法性，不能伪装成其他用户来取消关注
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!userRepository.existsByIdAndUsername(request.getUserId(), username)) {
+            throw new HuhuException(ErrorMsg.INVALID_UNFOLLOW_USER);
+        }
+
+        //检查是否是自己关注自己
         if (request.getUnFollowId().equals(request.getUserId())) {
             throw new HuhuException(ErrorMsg.NOT_ALLOW_UNFOLLOW_YOURSELF);
         }
 
+        //检查是否存在关注关系
         if (!checkFollowRelation(request.getUserId(), request.getUnFollowId())) {
             throw new HuhuException(ErrorMsg.NOT_EXIST_FOLLOW_RELATION);
         }

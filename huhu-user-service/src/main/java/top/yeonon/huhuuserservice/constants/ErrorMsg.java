@@ -21,4 +21,15 @@ public class ErrorMsg {
     public static final String NOT_EXIST_FOLLOW_RELATION = "双方不存在任何关注关系";
 
     public static final String EXIST_FOLLOW_RELATION = "双方已存在关注关系";
+
+    public static final String NOT_ALLOW_QUERY_OTHER_DETAILS = "不能查看其它用户的详细信息";
+
+    public static final String NOT_ALLOW_UPDATE_OTHER_DETAILS = "不能修改其它用户的信息";
+
+    public static final String NOT_ALLOW_DELETE_OTHER_DETAILS = "不能注销他人用户";
+
+    public static final String INVALID_FOLLOW_USER = "非法的关注请求";
+
+    public static final String INVALID_UNFOLLOW_USER = "非法的取消关注请求";
+
 }

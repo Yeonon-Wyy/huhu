@@ -10,6 +10,7 @@ import top.yeonon.huhuuserservice.vo.response.*;
  **/
 public interface IUserService {
 
+
     /**
      * 用户注册接口
      * @param request 请求对象

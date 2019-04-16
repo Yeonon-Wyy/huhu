@@ -1,6 +1,6 @@
 spring:
   application:
-    name: huhu-user-service
+    name: huhu-auth-server
   profiles:
     active: dev
 
@@ -11,7 +11,7 @@ spring:
         file-extension: yml
         group: DEV_GROUP
 server:
-  port: 7000
+  port: 8000
 
 
 

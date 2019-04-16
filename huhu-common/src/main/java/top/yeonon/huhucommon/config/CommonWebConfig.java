@@ -20,4 +20,6 @@ public class CommonWebConfig implements WebMvcConfigurer {
         converters.clear();
         converters.add(new MappingJackson2HttpMessageConverter());
     }
+
+
 }

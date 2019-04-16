@@ -1,12 +1,9 @@
-package top.yeonon.huhuuserservice.entity;
+package top.yeonon.huhuauthserver.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Configuration;
-import top.yeonon.huhuuserservice.constants.UserRole;
-import top.yeonon.huhuuserservice.constants.UserSex;
-import top.yeonon.huhuuserservice.constants.UserStatus;
+
 
 import javax.persistence.*;
 import java.util.Date;
@@ -75,22 +72,5 @@ public class User {
     @Column(name = "update_time", nullable = false)
     private Date updateTime;
 
-    /**
-     * 仅填充必要的信息，简化注册需要填写的信息
-     * @param username 用户名
-     * @param password 密码
-     * @param email 邮箱
-     */
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.status = UserStatus.NORMAL.getCode();
-        this.sex = UserSex.UNKNOWN.getCode();
-        this.role = UserRole.CUSTOMER.getCode();
-        this.followerCount = 0;
-        this.followingCount = 0;
-        this.createTime = new Date();
-        this.updateTime = this.createTime;
-    }
+
 }

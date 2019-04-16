@@ -1,20 +1,18 @@
 package top.yeonon.huhuuserservice.service.impl;
 
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.constants.ErrorMsg;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
-import top.yeonon.huhuuserservice.entity.UserFollower;
-import top.yeonon.huhuuserservice.entity.UserFollowing;
-import top.yeonon.huhuuserservice.repository.UserFollowerRepository;
-import top.yeonon.huhuuserservice.repository.UserFollowingRepository;
 import top.yeonon.huhuuserservice.repository.UserRepository;
 import top.yeonon.huhuuserservice.service.IUserService;
 import top.yeonon.huhuuserservice.vo.request.*;
@@ -27,16 +25,17 @@ import java.util.List;
  * @date 2019/4/14 0014 15:12
  **/
 @Service
+@Slf4j
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
 
-
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -52,17 +51,25 @@ public class UserService implements IUserService {
 
         User user = new User(
                 request.getUsername(),
-                CommonUtils.md5(request.getPassword()),
+                passwordEncoder.encode(request.getPassword()),
                 request.getEmail()
         );
         user = userRepository.save(user);
         return new UserRegisterResponseVo(user.getId());
     }
 
+
+
     @Override
     public UserQueryResponseVo queryUserInfo(UserQueryRequestVo request) throws HuhuException {
         if (!request.validate()) {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!userRepository.existsByIdAndUsername(request.getId(), username)) {
+            throw new HuhuException(ErrorMsg.NOT_ALLOW_QUERY_OTHER_DETAILS);
         }
 
         User user = userRepository.findById(request.getId()).orElse(null);
@@ -96,6 +103,11 @@ public class UserService implements IUserService {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!userRepository.existsByIdAndUsername(request.getId(), username)) {
+            throw new HuhuException(ErrorMsg.NOT_ALLOW_UPDATE_OTHER_DETAILS);
+        }
+
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
             throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
@@ -113,6 +125,11 @@ public class UserService implements IUserService {
     public UserDeleteResponseVo deleteUser(UserDeleteRequestVo request) throws HuhuException {
         if (!request.validate()) {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!userRepository.existsByIdAndUsername(request.getId(), username)) {
+            throw new HuhuException(ErrorMsg.NOT_ALLOW_DELETE_OTHER_DETAILS);
         }
 
         User user = userRepository.findById(request.getId()).orElse(null);

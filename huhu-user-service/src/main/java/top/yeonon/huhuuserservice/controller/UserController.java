@@ -1,6 +1,8 @@
 package top.yeonon.huhuuserservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuuserservice.service.IUserService;
@@ -11,6 +13,7 @@ import top.yeonon.huhuuserservice.vo.response.*;
  * @Author yeonon
  * @date 2019/4/14 0014 15:49
  **/
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -30,6 +33,7 @@ public class UserController {
     @GetMapping("/{id}")
     public UserQueryResponseVo queryUser(@PathVariable("id") Long id) throws HuhuException {
         UserQueryRequestVo request = new UserQueryRequestVo(id);
+
         return userService.queryUserInfo(request);
     }
 
