@@ -149,11 +149,7 @@ public class UserService implements IUserService {
         return new UserDeleteResponseVo(user.getId());
     }
 
-    //TODO: 实现了安全认证功能之后再写登录方法
-    @Override
-    public UserLoginResponseVo login(UserLoginRequestVo request) throws HuhuException {
-        return null;
-    }
+
 
     @Override
     public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request) throws HuhuException {

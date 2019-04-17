@@ -1,20 +1,16 @@
 package top.yeonon.huhuuserservice.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import top.yeonon.huhuuserservice.constants.Const;
-import top.yeonon.huhuuserservice.constants.UserRole;
+import top.yeonon.huhuuserservice.properties.HuhuSecurityProperties;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @Author yeonon
@@ -25,11 +21,19 @@ import java.util.stream.Stream;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    //TODO: 需要指定更加灵活的规则
+
+    private final HuhuSecurityProperties huhuSecurityProperties;
+
+    @Autowired
+    public ResourceServerConfiguration(HuhuSecurityProperties huhuSecurityProperties) {
+        this.huhuSecurityProperties = huhuSecurityProperties;
+    }
+
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users/**")
+                .antMatchers(huhuSecurityProperties.getAuthenticationPath())
                 .authenticated();
     }
 

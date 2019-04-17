@@ -47,14 +47,6 @@ public interface IUserService {
     UserDeleteResponseVo deleteUser(UserDeleteRequestVo request)
         throws HuhuException;
 
-    /**
-     * 用户登录接口
-     * @param request 请求对象
-     * @return 响应对象
-     * @throws HuhuException 可能抛出的异常
-     */
-    UserLoginResponseVo login(UserLoginRequestVo request)
-        throws HuhuException;
 
 
     /**
@@ -65,4 +57,6 @@ public interface IUserService {
      */
     UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request)
         throws HuhuException;
+
+
 }

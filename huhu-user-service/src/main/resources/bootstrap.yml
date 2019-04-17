@@ -13,6 +13,10 @@ spring:
 server:
   port: 7000
 
+huhu:
+  security:
+    authenticationPath: /users/**,/test/**
+
 
 
 

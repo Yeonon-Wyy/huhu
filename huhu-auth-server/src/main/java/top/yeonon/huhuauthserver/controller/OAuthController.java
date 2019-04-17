@@ -17,7 +17,7 @@ import java.security.Principal;
  * @date 2019/4/15 0015 17:13
  **/
 @RestController
-@RequestMapping("/oath/users")
+@RequestMapping("/oauth/users")
 public class OAuthController {
 
     private static final String AUTH_HEADER = "Authorization";
