@@ -16,7 +16,7 @@ import top.yeonon.huhuauthserver.repository.UserRepository;
  * @Author yeonon
  * @date 2019/4/16 0016 16:02
  **/
-@Component
+@Component(value = "domainUserDetailsService")
 public class DomainUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
