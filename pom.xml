@@ -19,6 +19,8 @@
     <modules>
         <module>huhu-user-service</module>
         <module>huhu-common</module>
+        <module>huhu-auth-server</module>
+        <module>huhu-mail-service</module>
     </modules>
 
     <properties>

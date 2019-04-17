@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: huhu-mail-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 47.94.156.44:8848
+        file-extension: yml
+        group: DEV_GROUP
+  profiles:
+    active: dev
+server:
+  port: 9000
