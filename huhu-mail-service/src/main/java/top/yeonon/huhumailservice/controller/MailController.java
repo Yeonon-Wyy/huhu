@@ -37,6 +37,6 @@ public class MailController {
     public void forgetPassword(@RequestBody TemplateMessageRequestVo request) throws MessagingException, HuhuException {
         request.setFrom(from);
         request.setSubject(MailType.FORGET_PASSWORD.getSubject());
-        mailService.sendChangePassValidateCodeMail(request, MailType.FORGET_PASSWORD.getTemplateName());
+        mailService.sendHtmlMail(request, MailType.FORGET_PASSWORD.getTemplateName());
     }
 }

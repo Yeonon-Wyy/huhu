@@ -27,14 +27,18 @@ import java.util.Map;
 @Service
 public class MailService implements IMailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+
+    private final TemplateEngine templateEngine;
+
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Autowired
-    private TemplateEngine templateEngine;
-
-    @Autowired
-    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    public MailService(JavaMailSender mailSender, TemplateEngine templateEngine, ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+        this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
+        this.threadPoolTaskExecutor = threadPoolTaskExecutor;
+    }
 
 
     @Override
@@ -57,6 +61,7 @@ public class MailService implements IMailService {
             throw new HuhuException(ErrMessage.INVALID_FORMATE);
         }
 
+        //用线程池去执行发送邮件任务，即同步改异步
         threadPoolTaskExecutor.execute(() -> {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             try {

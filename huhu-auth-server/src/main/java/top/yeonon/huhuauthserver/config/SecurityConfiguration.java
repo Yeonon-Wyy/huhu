@@ -17,12 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-//    @Override
-//    @Bean
-//    protected UserDetailsService userDetailsService() {
-//        return new DomainUserDetailsService();
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

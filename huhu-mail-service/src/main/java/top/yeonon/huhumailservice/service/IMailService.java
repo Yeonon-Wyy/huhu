@@ -23,6 +23,13 @@ public interface IMailService {
      */
     void sendSimpleMail(String from, String to, String subject, String content);
 
-    void sendChangePassValidateCodeMail(TemplateMessageRequestVo request,
+    /**
+     * 发送HTML格式的邮件
+     * @param request 请求
+     * @param templateName 模板名称
+     * @throws MessagingException
+     * @throws HuhuException
+     */
+    void sendHtmlMail(TemplateMessageRequestVo request,
                                         String templateName) throws MessagingException, HuhuException;
 }

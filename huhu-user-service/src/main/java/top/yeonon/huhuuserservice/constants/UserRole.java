@@ -26,8 +26,9 @@ public enum UserRole {
 
     public static String valueOf(int code) {
         for (UserRole role : values()) {
-            if (role.getCode() == code)
+            if (role.getCode() == code) {
                 return role.getDescription();
+            }
         }
         return null;
     }
