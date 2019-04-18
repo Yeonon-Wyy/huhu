@@ -59,4 +59,13 @@ public interface IUserService {
         throws HuhuException;
 
 
+    //以下三个方法是修改密码的流程
+    //1. 发起“忘记密码”请求，需要提供用户名和邮箱（或者手机），系统生成验证码，通过邮箱或者手机发送给用户
+    //2. 用户拿到验证码，再次发起请求，此时前端应该持有用户名，故不需要用户再次提供，由前端填充即可，验证码需要用户提供
+    //3. 验证通过后，用户输入新密码，然后更新用户信息即可，如果用户此时处于登录状态，则另其重新登录
+
+    void forgetPass(ForgetPassRequestVo request) throws HuhuException;
+
+
+    void updatePassword(UpdatePassRequestVo request) throws HuhuException;
 }

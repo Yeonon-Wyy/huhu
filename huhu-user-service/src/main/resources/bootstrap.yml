@@ -4,12 +4,15 @@ spring:
   profiles:
     active: dev
 
+
   cloud:
     nacos:
       config:
         server-addr: 47.94.156.44:8848
         file-extension: yml
         group: DEV_GROUP
+  redis:
+    host: 192.168.170.143
 server:
   port: 7000
 

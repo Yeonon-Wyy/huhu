@@ -9,14 +9,17 @@ import lombok.Getter;
 @Getter
 public enum MailType {
 
-    FORGET_PASSWORD(1, "forget_password.html");
+    FORGET_PASSWORD(1, "forget_password.html", "重置密码");
 
     private int code;
 
     private String templateName;
 
-    MailType(int code, String templateName) {
+    private String subject;
+
+    MailType(int code, String templateName, String subject) {
         this.code = code;
         this.templateName = templateName;
+        this.subject = subject;
     }
 }

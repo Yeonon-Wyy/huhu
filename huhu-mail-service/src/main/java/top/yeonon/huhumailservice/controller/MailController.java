@@ -26,12 +26,17 @@ public class MailController {
     @Value("${spring.mail.username}")
     private String from;
 
+    private final IMailService mailService;
+
     @Autowired
-    private IMailService mailService;
+    public MailController(IMailService mailService) {
+        this.mailService = mailService;
+    }
 
     @PostMapping("/send/forget_password")
     public void forgetPassword(@RequestBody TemplateMessageRequestVo request) throws MessagingException, HuhuException {
         request.setFrom(from);
+        request.setSubject(MailType.FORGET_PASSWORD.getSubject());
         mailService.sendChangePassValidateCodeMail(request, MailType.FORGET_PASSWORD.getTemplateName());
     }
 }

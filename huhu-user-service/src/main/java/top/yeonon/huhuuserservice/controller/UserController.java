@@ -55,4 +55,14 @@ public class UserController {
     public UserBatchQueryResponseVo batchQueryUserInfo(@RequestBody UserBatchQueryRequestVo request) throws HuhuException {
         return userService.batchQueryUserInfo(request);
     }
+
+    @PostMapping("/password/forget")
+    public void forgetPassword(@RequestBody ForgetPassRequestVo request) throws HuhuException {
+        userService.forgetPass(request);
+    }
+
+    @PutMapping("/password/update")
+    public void updatePassword(@RequestBody UpdatePassRequestVo request) throws HuhuException {
+        userService.updatePassword(request);
+    }
 }

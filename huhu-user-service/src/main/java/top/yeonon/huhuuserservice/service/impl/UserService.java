@@ -1,15 +1,22 @@
 package top.yeonon.huhuuserservice.service.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.utils.CommonUtils;
+import top.yeonon.huhuuserservice.client.HuhuMailClient;
+import top.yeonon.huhuuserservice.client.vo.RemoteForgetPassRequestVo;
+import top.yeonon.huhuuserservice.constants.Const;
 import top.yeonon.huhuuserservice.constants.ErrorMsg;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
@@ -19,6 +26,8 @@ import top.yeonon.huhuuserservice.vo.request.*;
 import top.yeonon.huhuuserservice.vo.response.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author yeonon
@@ -32,10 +41,16 @@ public class UserService implements IUserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RedisTemplate<Object, Object> redisTemplate;
+
+    private final HuhuMailClient huhuMailClient;
+
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisTemplate<Object, Object> redisTemplate, HuhuMailClient huhuMailClient) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.redisTemplate = redisTemplate;
+        this.huhuMailClient = huhuMailClient;
     }
 
     @Override
@@ -187,5 +202,72 @@ public class UserService implements IUserService {
         );
     }
 
+    @Override
+    public void forgetPass(ForgetPassRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+        if (!userRepository.existsByUsernameAndEmail(request.getUsername(), request.getEmail())) {
+            throw new HuhuException(ErrorMsg.USERNAME_NOT_MATCH_EMAIL);
+        }
 
+        //存入redis
+        String validateCode = CommonUtils.generateValidateCode(Const.RedisConst.FORGET_PASSWORD_VALIDATE_CODE_COUNT);
+        redisTemplate.opsForValue().set(
+                Const.RedisConst.FORGET_PASSWORD_VALIDATE_CODE_PREFIX + request.getUsername(),
+                validateCode,
+                Const.RedisConst.FORGET_PASSWORD_VALIDATE_CODE_TIMEOUT,
+                TimeUnit.SECONDS
+        );
+
+        RemoteForgetPassRequestVo remoteRequest = new RemoteForgetPassRequestVo();
+        remoteRequest.setTo(request.getEmail());
+        Map<String, Object> content = Maps.newHashMap();
+        content.put("username", request.getUsername());
+        content.put("validateCode", validateCode);
+        remoteRequest.setContent(content);
+        //发送邮件
+        huhuMailClient.forgetPassword(remoteRequest);
+
+    }
+
+
+    private void checkValidateCode(String username, String validatCode) throws HuhuException {
+
+
+        String redisValidateCode = (String) redisTemplate.opsForValue().get(
+                Const.RedisConst.FORGET_PASSWORD_VALIDATE_CODE_PREFIX + username
+        );
+
+        if (!validatCode.equals(redisValidateCode)) {
+            throw new HuhuException(ErrorMsg.VALIDATE_CODE_ERROR);
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void updatePassword(UpdatePassRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+        //检查验证码是否正确
+        checkValidateCode(request.getUsername(), request.getValidateCode());
+
+        User user = userRepository.findByUsername(request.getUsername());
+        if (user == null) {
+            throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        //更新密码到数据库
+        userRepository.save(user);
+
+        //从Redis里删除
+        redisTemplate.delete(Const.RedisConst.FORGET_PASSWORD_VALIDATE_CODE_PREFIX + request.getUsername());
+    }
 }
