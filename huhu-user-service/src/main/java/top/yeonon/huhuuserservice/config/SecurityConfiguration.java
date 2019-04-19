@@ -18,6 +18,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers(HttpMethod.POST, "/users")
-                .antMatchers("/users/password/**");
+                .antMatchers("/users/password/**")
+                .antMatchers("/users/batch/query");
     }
 }
