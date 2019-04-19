@@ -2,14 +2,13 @@ package top.yeonon.huhuuserservice.interceptor;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhucommon.utils.CommonUtils;
-import top.yeonon.huhuuserservice.constants.ErrorMsg;
+import top.yeonon.huhuuserservice.constants.ErrMessage;
 import top.yeonon.huhuuserservice.interceptor.annotation.CheckId;
 import top.yeonon.huhuuserservice.properties.HuhuSecurityProperties;
 
@@ -53,7 +52,7 @@ public class CheckIdInterceptor implements HandlerInterceptor {
 
         //与传入的ID做比较，如果不相等，则抛出异常，表示横向越权操作
         if (!id.equals(tokenWithId)) {
-            throw new HuhuException(ErrorMsg.NOT_ALLOW_QUERY_OTHER_DETAILS);
+            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
         }
 
         return true;

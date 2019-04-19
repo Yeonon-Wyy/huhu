@@ -1,11 +1,10 @@
 package top.yeonon.huhuuserservice.service.impl;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhuuserservice.constants.ErrorMsg;
+import top.yeonon.huhuuserservice.constants.ErrMessage;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
 import top.yeonon.huhuuserservice.entity.UserFollower;
@@ -52,12 +51,12 @@ public class UserFollowService implements IUserFollowService {
     public UserFollowResponseVo follow(UserFollowRequestVo request) throws HuhuException {
 
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
 
         if (request.getFollowUserId().equals(request.getUserId())) {
-            throw new HuhuException(ErrorMsg.NOT_ALLOW_FOLLOW_YOURSELF);
+            throw new HuhuException(ErrMessage.NOT_ALLOW_FOLLOW_YOURSELF);
         }
 
         //获取发起关注的用户对象
@@ -68,12 +67,12 @@ public class UserFollowService implements IUserFollowService {
         if (followUser == null
                 || followedUser == null
                 || followedUser.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
+            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
         }
 
         //0. 先检查是否已经存在关注关系
         if (checkFollowRelation(followUser.getId(), followedUser.getId())) {
-            throw new HuhuException(ErrorMsg.EXIST_FOLLOW_RELATION);
+            throw new HuhuException(ErrMessage.EXIST_FOLLOW_RELATION);
         }
 
         //1. 插入数据对user->follower 关联表中
@@ -103,19 +102,19 @@ public class UserFollowService implements IUserFollowService {
     @Transactional
     public UserUnFollowResponseVo unFollow(UserUnFollowRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
 
 
         //检查是否是自己关注自己
         if (request.getUnFollowId().equals(request.getUserId())) {
-            throw new HuhuException(ErrorMsg.NOT_ALLOW_UNFOLLOW_YOURSELF);
+            throw new HuhuException(ErrMessage.NOT_ALLOW_UN_FOLLOW_YOURSELF);
         }
 
         //检查是否存在关注关系
         if (!checkFollowRelation(request.getUserId(), request.getUnFollowId())) {
-            throw new HuhuException(ErrorMsg.NOT_EXIST_FOLLOW_RELATION);
+            throw new HuhuException(ErrMessage.NOT_EXIST_FOLLOW_RELATION);
         }
 
         //获取发起取消关注的用户对象
@@ -123,7 +122,7 @@ public class UserFollowService implements IUserFollowService {
         //获取被取消关注的用户对象
         User unFollowedUser = userRepository.findById(request.getUnFollowId()).orElse(null);
         if (followUser == null || unFollowedUser == null) {
-            throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
+            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
         }
 
         //1. 删除“关注我的人”表中的记录
@@ -140,7 +139,7 @@ public class UserFollowService implements IUserFollowService {
     @Override
     public FollowerQueryResponseVo queryFollower(FollowerQueryRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
         //这里不检查传入的用户ID是否存在了，因为如果没有任何关注者，就不会存在记录，返回的内容也应该是空
@@ -155,7 +154,7 @@ public class UserFollowService implements IUserFollowService {
     @Override
     public FollowingQueryResponseVo queryFollowing(FollowingQueryRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
         List<UserFollowing> userFollowings = userFollowingRepository.findByUserId(request.getId());

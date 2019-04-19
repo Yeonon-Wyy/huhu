@@ -17,7 +17,7 @@ import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.client.HuhuMailClient;
 import top.yeonon.huhuuserservice.client.vo.RemoteForgetPassRequestVo;
 import top.yeonon.huhuuserservice.constants.Const;
-import top.yeonon.huhuuserservice.constants.ErrorMsg;
+import top.yeonon.huhuuserservice.constants.ErrMessage;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
 import top.yeonon.huhuuserservice.repository.UserRepository;
@@ -56,11 +56,11 @@ public class UserService implements IUserService {
     @Override
     public UserRegisterResponseVo register(UserRegisterRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new HuhuException(ErrorMsg.EXIST_SAME_USERNAME);
+            throw new HuhuException(ErrMessage.EXIST_SAME_USERNAME);
         }
 
 
@@ -78,16 +78,16 @@ public class UserService implements IUserService {
     @Override
     public UserQueryResponseVo queryUserInfo(UserQueryRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
-            throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
+            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
         }
 
         if (user.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrorMsg.ALREADY_CLOSE_USER);
+            throw new HuhuException(ErrMessage.ALREADY_CLOSE_USER);
         }
 
         return new UserQueryResponseVo(
@@ -109,17 +109,17 @@ public class UserService implements IUserService {
     @Override
     public UserUpdateResponseVo updateUserInfo(UserUpdateRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
-            throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
+            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
         }
 
         if (user.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrorMsg.ALREADY_CLOSE_USER);
+            throw new HuhuException(ErrMessage.ALREADY_CLOSE_USER);
         }
 
         user = userRepository.save(request.updateUser(user));
@@ -129,18 +129,18 @@ public class UserService implements IUserService {
     @Override
     public UserDeleteResponseVo deleteUser(UserDeleteRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
-            throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
+            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
         }
 
         //如果已经是处于注销状态，那么就不需要再次注销了
         if (user.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrorMsg.ALREADY_CLOSE_USER);
+            throw new HuhuException(ErrMessage.ALREADY_CLOSE_USER);
         }
 
         //仅仅修改状态，并不真正删除数据记录
@@ -155,7 +155,7 @@ public class UserService implements IUserService {
     @Override
     public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
         //分页查询
@@ -191,10 +191,10 @@ public class UserService implements IUserService {
     @Override
     public void forgetPass(ForgetPassRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
         if (!userRepository.existsByUsernameAndEmail(request.getUsername(), request.getEmail())) {
-            throw new HuhuException(ErrorMsg.USERNAME_NOT_MATCH_EMAIL);
+            throw new HuhuException(ErrMessage.USERNAME_NOT_MATCH_EMAIL);
         }
 
         //存入redis
@@ -226,7 +226,7 @@ public class UserService implements IUserService {
         );
 
         if (!validatCode.equals(redisValidateCode)) {
-            throw new HuhuException(ErrorMsg.VALIDATE_CODE_ERROR);
+            throw new HuhuException(ErrMessage.VALIDATE_CODE_ERROR);
         }
 
     }
@@ -235,7 +235,7 @@ public class UserService implements IUserService {
     @Transactional
     public void updatePassword(UpdatePassRequestVo request) throws HuhuException {
         if (!request.validate()) {
-            throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
         //检查验证码是否正确
@@ -243,7 +243,7 @@ public class UserService implements IUserService {
 
         User user = userRepository.findByUsername(request.getUsername());
         if (user == null) {
-            throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
+            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
         }
 
         user.setPassword(

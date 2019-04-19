@@ -4,7 +4,7 @@ package top.yeonon.huhuuserservice.constants;
  * @Author yeonon
  * @date 2019/4/14 0014 15:39
  **/
-public class ErrorMsg {
+public class ErrMessage {
 
     public static final String REQUEST_PARAM_ERROR = "请求参数错误";
 
@@ -16,13 +16,13 @@ public class ErrorMsg {
 
     public static final String NOT_ALLOW_FOLLOW_YOURSELF = "不允许关注自己";
 
-    public static final String NOT_ALLOW_UNFOLLOW_YOURSELF = "不允许取消关注自己";
+    public static final String NOT_ALLOW_UN_FOLLOW_YOURSELF = "不允许取消关注自己";
 
     public static final String NOT_EXIST_FOLLOW_RELATION = "双方不存在任何关注关系";
 
     public static final String EXIST_FOLLOW_RELATION = "双方已存在关注关系";
 
-    public static final String NOT_ALLOW_QUERY_OTHER_DETAILS = "不能查看其它用户的详细信息";
+    public static final String NOT_ALLOW_ACTION = "禁止越权行为";
 
     public static final String USERNAME_NOT_MATCH_EMAIL = "用户名和邮箱不匹配";
 

@@ -1,13 +1,8 @@
 package top.yeonon.huhuuserservice.controller;
 
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhucommon.utils.CommonUtils;
-import top.yeonon.huhuuserservice.constants.ErrorMsg;
 import top.yeonon.huhuuserservice.interceptor.annotation.CheckId;
 import top.yeonon.huhuuserservice.service.IUserFollowService;
 import top.yeonon.huhuuserservice.vo.request.FollowerQueryRequestVo;
