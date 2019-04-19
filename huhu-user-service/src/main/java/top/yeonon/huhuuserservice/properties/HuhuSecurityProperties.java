@@ -18,4 +18,6 @@ import org.springframework.context.annotation.Configuration;
 public class HuhuSecurityProperties {
 
     private String[] authenticationPath;
+
+    private JwtProperties jwt = new JwtProperties();
 }

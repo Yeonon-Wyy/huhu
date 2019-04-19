@@ -18,6 +18,8 @@ server:
 huhu:
   security:
     authenticationPath: /users/**,/test/**
+    jwt:
+      signKey: huhu-project
 
 
 
