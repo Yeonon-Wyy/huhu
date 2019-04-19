@@ -10,4 +10,6 @@ import top.yeonon.huhuqaservice.entity.QuestionTag;
  **/
 @Repository
 public interface QuestionTagRepository extends JpaRepository<QuestionTag, Long> {
+
+
 }

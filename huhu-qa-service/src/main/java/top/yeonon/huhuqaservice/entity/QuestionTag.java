@@ -27,4 +27,9 @@ public class QuestionTag {
 
     @Column(name = "tag_id", nullable = false, length = 11)
     private Long tagId;
+
+    public QuestionTag(Long questionId, Long tagId) {
+        this.questionId = questionId;
+        this.tagId = tagId;
+    }
 }
