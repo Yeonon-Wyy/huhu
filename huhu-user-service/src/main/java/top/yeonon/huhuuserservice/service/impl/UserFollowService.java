@@ -2,7 +2,6 @@ package top.yeonon.huhuuserservice.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
@@ -55,11 +54,7 @@ public class UserFollowService implements IUserFollowService {
         if (!request.validate()) {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
-        //检查合法性，不能代替他人关注用户
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!userRepository.existsByIdAndUsername(request.getUserId(), username)) {
-            throw new HuhuException(ErrorMsg.INVALID_FOLLOW_USER);
-        }
+
 
         if (request.getFollowUserId().equals(request.getUserId())) {
             throw new HuhuException(ErrorMsg.NOT_ALLOW_FOLLOW_YOURSELF);
@@ -111,11 +106,7 @@ public class UserFollowService implements IUserFollowService {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
-        //检查合法性，不能伪装成其他用户来取消关注
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!userRepository.existsByIdAndUsername(request.getUserId(), username)) {
-            throw new HuhuException(ErrorMsg.INVALID_UNFOLLOW_USER);
-        }
+
 
         //检查是否是自己关注自己
         if (request.getUnFollowId().equals(request.getUserId())) {

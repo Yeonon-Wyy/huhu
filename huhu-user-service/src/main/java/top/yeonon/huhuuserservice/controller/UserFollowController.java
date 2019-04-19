@@ -1,8 +1,14 @@
 package top.yeonon.huhuuserservice.controller;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.utils.CommonUtils;
+import top.yeonon.huhuuserservice.constants.ErrorMsg;
+import top.yeonon.huhuuserservice.interceptor.annotation.CheckId;
 import top.yeonon.huhuuserservice.service.IUserFollowService;
 import top.yeonon.huhuuserservice.vo.request.FollowerQueryRequestVo;
 import top.yeonon.huhuuserservice.vo.request.FollowingQueryRequestVo;
@@ -29,16 +35,20 @@ public class UserFollowController {
     }
 
     @PostMapping("/{id}")
+    @CheckId
     public UserFollowResponseVo follow(@PathVariable("id") Long id,
                                        @RequestBody UserFollowRequestVo request) throws HuhuException {
+
         request.setUserId(id);
         return userFollowService.follow(request);
     }
 
     @DeleteMapping("/{id}")
+    @CheckId
     public UserUnFollowResponseVo unFollow(@PathVariable("id") Long id,
                                            @RequestBody UserUnFollowRequestVo request) throws HuhuException {
         request.setUserId(id);
+
         return userFollowService.unFollow(request);
     }
 
@@ -48,8 +58,11 @@ public class UserFollowController {
         return userFollowService.queryFollower(request);
     }
 
+
+
     @GetMapping("/following/{id}")
     public FollowingQueryResponseVo queryFollowing(@PathVariable("id") Long id) throws HuhuException {
+
         FollowingQueryRequestVo request = new FollowingQueryRequestVo(id);
         return userFollowService.queryFollowing(request);
     }

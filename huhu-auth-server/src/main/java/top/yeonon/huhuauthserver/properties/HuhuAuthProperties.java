@@ -24,5 +24,6 @@ public class HuhuAuthProperties {
 
     private List<AuthClientProperties> clients = new ArrayList<>();
 
+    private JwtProperties jwt = new JwtProperties();
 
 }

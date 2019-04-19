@@ -15,8 +15,10 @@ server:
 
 
 
-
-
+huhu:
+  auth:
+    jwt:
+      SignKey: huhu-project
 
 
 

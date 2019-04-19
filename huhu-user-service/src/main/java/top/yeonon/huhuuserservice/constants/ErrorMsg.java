@@ -24,14 +24,6 @@ public class ErrorMsg {
 
     public static final String NOT_ALLOW_QUERY_OTHER_DETAILS = "不能查看其它用户的详细信息";
 
-    public static final String NOT_ALLOW_UPDATE_OTHER_DETAILS = "不能修改其它用户的信息";
-
-    public static final String NOT_ALLOW_DELETE_OTHER_DETAILS = "不能注销他人用户";
-
-    public static final String INVALID_FOLLOW_USER = "非法的关注请求";
-
-    public static final String INVALID_UNFOLLOW_USER = "非法的取消关注请求";
-
     public static final String USERNAME_NOT_MATCH_EMAIL = "用户名和邮箱不匹配";
 
     public static final String VALIDATE_CODE_ERROR = "验证码错误";

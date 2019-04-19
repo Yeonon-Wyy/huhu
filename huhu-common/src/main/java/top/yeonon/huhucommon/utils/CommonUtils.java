@@ -1,5 +1,8 @@
 package top.yeonon.huhucommon.utils;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.impl.Base64Codec;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
@@ -31,5 +34,12 @@ public class CommonUtils {
             buffer.append(chars[index]);
         }
         return buffer.toString();
+    }
+
+    public static Claims parseJwtToken(String jwtToken, String sign) {
+        return Jwts.parser()
+                .setSigningKey(Base64Codec.BASE64.encode(sign))
+                .parseClaimsJws(jwtToken)
+                .getBody();
     }
 }

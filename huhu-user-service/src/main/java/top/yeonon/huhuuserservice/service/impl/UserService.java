@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,12 +81,6 @@ public class UserService implements IUserService {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
-
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!userRepository.existsByIdAndUsername(request.getId(), username)) {
-            throw new HuhuException(ErrorMsg.NOT_ALLOW_QUERY_OTHER_DETAILS);
-        }
-
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
             throw new HuhuException(ErrorMsg.NOT_FOUND_USER);
@@ -118,10 +112,6 @@ public class UserService implements IUserService {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!userRepository.existsByIdAndUsername(request.getId(), username)) {
-            throw new HuhuException(ErrorMsg.NOT_ALLOW_UPDATE_OTHER_DETAILS);
-        }
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
@@ -142,10 +132,6 @@ public class UserService implements IUserService {
             throw new HuhuException(ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!userRepository.existsByIdAndUsername(request.getId(), username)) {
-            throw new HuhuException(ErrorMsg.NOT_ALLOW_DELETE_OTHER_DETAILS);
-        }
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {

@@ -9,4 +9,6 @@ public class Const {
     public static class UserConst {
         public static final String ROLE_PREFIX = "ROLE_";
     }
+
+
 }
