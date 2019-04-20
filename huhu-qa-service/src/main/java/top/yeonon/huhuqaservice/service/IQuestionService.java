@@ -1,14 +1,8 @@
 package top.yeonon.huhuqaservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.request.*;
+import top.yeonon.huhuqaservice.vo.question.response.*;
 
 /**
  * @Author yeonon
@@ -46,4 +40,12 @@ public interface IQuestionService {
      * @return 响应对象
      */
     QuestionDeleteResponseVo deleteQuestion(QuestionDeleteRequestVo request) throws HuhuException;
+
+
+    /**
+     * 查询所有（其实只是返回题目信息而已）
+     * @param request 请求
+     * @return  响应
+     */
+    QuestionQueryAllResponseVo queryAll(QuestionQueryAllRequestVo request);
 }

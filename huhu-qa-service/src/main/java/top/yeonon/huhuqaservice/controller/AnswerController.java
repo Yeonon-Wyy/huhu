@@ -47,9 +47,11 @@ public class AnswerController {
     @GetMapping("/{questionId}")
     public AnswerBatchQueryResponseVo batchQueryAnswer(@RequestBody AnswerBatchQueryRequestVo request,
                                                        @PathVariable("questionId") Long questionId,
-                                                       @RequestParam(value = "pageNum", defaultValue = "0") Long pageNum,
-                                                       @RequestParam(value = "pageSize", defaultValue = "10") Long pageSize) throws HuhuException {
+                                                       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
         request.setQuestionId(questionId);
+        request.setPageNum(pageNum);
+        request.setPageSize(pageSize);
         return answerService.batchQueryAnswer(request);
     }
 

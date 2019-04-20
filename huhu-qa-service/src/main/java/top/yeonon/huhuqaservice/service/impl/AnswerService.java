@@ -79,7 +79,7 @@ public class AnswerService implements IAnswerService {
         }
 
         //分页查询数据
-        Sort sort = new Sort(Sort.Direction.ASC, "id");
+        Sort sort = new Sort(Sort.Direction.ASC, "approvalCount");
         Page<Answer> answers = answerRepository.findAllByQuestionId(
                 request.getQuestionId(),
                 PageRequest.of(

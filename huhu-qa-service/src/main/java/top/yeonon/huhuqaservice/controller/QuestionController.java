@@ -11,14 +11,8 @@ import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuqaservice.interceptor.annatation.CheckUserId;
 import top.yeonon.huhuqaservice.service.IQuestionService;
 import top.yeonon.huhuqaservice.utils.QAUtils;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.request.*;
+import top.yeonon.huhuqaservice.vo.question.response.*;
 
 /**
  * @Author yeonon
@@ -52,6 +46,13 @@ public class QuestionController {
     public QuestionQueryResponseVo queryQuestion(@PathVariable("id") Long id) throws HuhuException {
         QuestionQueryRequestVo request = new QuestionQueryRequestVo(id);
         return questionService.queryQuestion(request);
+    }
+
+    @GetMapping
+    public QuestionQueryAllResponseVo queryAllQuestion(@RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        QuestionQueryAllRequestVo request = new QuestionQueryAllRequestVo(pageNum, pageSize);
+        return questionService.queryAll(request);
     }
 
     @PutMapping("{id}")

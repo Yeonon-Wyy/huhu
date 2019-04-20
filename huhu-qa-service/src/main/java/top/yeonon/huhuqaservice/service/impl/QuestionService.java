@@ -4,6 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
@@ -16,14 +19,8 @@ import top.yeonon.huhuqaservice.repository.QuestionRepository;
 import top.yeonon.huhuqaservice.repository.QuestionTagRepository;
 import top.yeonon.huhuqaservice.repository.TagRepository;
 import top.yeonon.huhuqaservice.service.IQuestionService;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.question.request.QuestionUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.question.response.QuestionUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.request.*;
+import top.yeonon.huhuqaservice.vo.question.response.*;
 
 import java.util.List;
 import java.util.Set;
@@ -149,6 +146,33 @@ public class QuestionService implements IQuestionService {
         question.setStatus(QuestionStatus.CLOSE.getCode());
         questionRepository.save(question);
         return new QuestionDeleteResponseVo(question.getId());
+    }
+
+    @Override
+    public QuestionQueryAllResponseVo queryAll(QuestionQueryAllRequestVo request) {
+
+        Sort sort = new Sort(Sort.Direction.ASC, "id");
+        Page<Question> questions = questionRepository.findAll(PageRequest.of(
+                request.getPageNum(),
+                request.getPageSize(),
+                sort
+        ));
+
+        List<QuestionQueryAllResponseVo.QuestionInfo> questionInfoList = Lists.newArrayList();
+        questions.forEach(question -> {
+            questionInfoList.add(new QuestionQueryAllResponseVo.QuestionInfo(
+                    question.getId(),
+                    question.getTitle(),
+                    question.getCreateTime(),
+                    question.getUpdateTime()
+            ));
+        });
+
+        return new QuestionQueryAllResponseVo(
+                questionInfoList,
+                request.getPageNum(),
+                request.getPageSize()
+        );
     }
 
     /**
