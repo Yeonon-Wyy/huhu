@@ -10,8 +10,6 @@ import top.yeonon.huhuuserservice.vo.response.FollowingQueryResponseVo;
 import top.yeonon.huhuuserservice.vo.response.UserFollowResponseVo;
 import top.yeonon.huhuuserservice.vo.response.UserUnFollowResponseVo;
 
-import java.util.List;
-
 /**
  * @Author yeonon
  * @date 2019/4/14 0014 17:34

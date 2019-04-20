@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.Base64Codec;
 import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.Random;
 

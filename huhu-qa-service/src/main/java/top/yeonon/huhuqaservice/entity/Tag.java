@@ -3,7 +3,6 @@ package top.yeonon.huhuqaservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Repository;
 import top.yeonon.huhuqaservice.constant.TagStatus;
 
 import javax.persistence.*;

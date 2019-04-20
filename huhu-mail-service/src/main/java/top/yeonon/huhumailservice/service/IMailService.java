@@ -1,11 +1,9 @@
 package top.yeonon.huhumailservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhumailservice.constants.MailType;
 import top.yeonon.huhumailservice.vo.TemplateMessageRequestVo;
 
 import javax.mail.MessagingException;
-import java.util.Map;
 
 /**
  * @Author yeonon

@@ -12,7 +12,6 @@ import top.yeonon.huhumailservice.service.IMailService;
 import top.yeonon.huhumailservice.vo.TemplateMessageRequestVo;
 
 import javax.mail.MessagingException;
-import java.util.Map;
 
 /**
  * @Author yeonon

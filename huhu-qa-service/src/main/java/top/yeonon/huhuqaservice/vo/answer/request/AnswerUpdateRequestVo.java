@@ -3,7 +3,6 @@ package top.yeonon.huhuqaservice.vo.answer.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import top.yeonon.huhuqaservice.entity.Answer;
 

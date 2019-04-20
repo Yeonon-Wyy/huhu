@@ -3,7 +3,6 @@ package top.yeonon.huhuuserservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import top.yeonon.huhuuserservice.constants.UserRole;
 import top.yeonon.huhuuserservice.constants.UserSex;
 import top.yeonon.huhuuserservice.constants.UserStatus;
