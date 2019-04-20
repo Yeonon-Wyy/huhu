@@ -12,4 +12,9 @@ spring:
 server:
   port: 5000
 
+huhu:
+  security:
+    jwt:
+      signKey: huhu-project
+
 

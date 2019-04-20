@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuqaservice.constant.ErrMessage;
+import top.yeonon.huhuqaservice.constant.QuestionStatus;
 import top.yeonon.huhuqaservice.entity.Question;
 import top.yeonon.huhuqaservice.entity.QuestionTag;
 import top.yeonon.huhuqaservice.entity.Tag;
@@ -16,7 +17,13 @@ import top.yeonon.huhuqaservice.repository.QuestionTagRepository;
 import top.yeonon.huhuqaservice.repository.TagRepository;
 import top.yeonon.huhuqaservice.service.IQuestionService;
 import top.yeonon.huhuqaservice.vo.request.QuestionCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.request.QuestionDeleteRequestVo;
+import top.yeonon.huhuqaservice.vo.request.QuestionQueryRequestVo;
+import top.yeonon.huhuqaservice.vo.request.QuestionUpdateRequestVo;
 import top.yeonon.huhuqaservice.vo.response.QuestionCreateResponseVo;
+import top.yeonon.huhuqaservice.vo.response.QuestionDeleteResponseVo;
+import top.yeonon.huhuqaservice.vo.response.QuestionQueryResponseVo;
+import top.yeonon.huhuqaservice.vo.response.QuestionUpdateResponseVo;
 
 import java.util.List;
 import java.util.Set;
@@ -77,6 +84,65 @@ public class QuestionService implements IQuestionService {
         questionTagRepository.saveAll(questionTagList);
 
         return new QuestionCreateResponseVo(questionId);
+    }
+
+    @Override
+    public QuestionQueryResponseVo queryQuestion(QuestionQueryRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        Question question = questionRepository.findById(request.getId()).orElse(null);
+        if (question == null) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        }
+
+        return new QuestionQueryResponseVo(
+                question.getTitle(),
+                question.getContent(),
+                question.getFollowerCount(),
+                question.getAnswerCount(),
+                question.getStatus(),
+                question.getCreateTime(),
+                question.getUpdateTime()
+        );
+    }
+
+    @Override
+    @Transactional
+    public QuestionUpdateResponseVo updateQuestion(QuestionUpdateRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
+        if (question == null) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        }
+        if (questionRepository.existsByTitle(request.getTitle())) {
+            throw new HuhuException(ErrMessage.EXIST_SAME_TITLE);
+        }
+        question = request.update(question);
+        questionRepository.save(question);
+
+        return new QuestionUpdateResponseVo(request.getId());
+    }
+
+    @Override
+    @Transactional
+    public QuestionDeleteResponseVo deleteQuestion(QuestionDeleteRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
+        if (question == null) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        }
+
+        question.setStatus(QuestionStatus.CLOSE.getCode());
+        questionRepository.save(question);
+        return new QuestionDeleteResponseVo(question.getId());
     }
 
     /**

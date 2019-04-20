@@ -37,6 +37,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .authenticated();
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

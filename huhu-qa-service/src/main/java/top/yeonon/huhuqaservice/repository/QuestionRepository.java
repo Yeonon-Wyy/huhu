@@ -12,4 +12,6 @@ import top.yeonon.huhuqaservice.entity.Question;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     boolean existsByTitle(String title);
+
+    Question findByIdAndUserId(Long id, Long userId);
 }
