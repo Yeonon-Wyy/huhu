@@ -16,14 +16,14 @@ import top.yeonon.huhuqaservice.repository.QuestionRepository;
 import top.yeonon.huhuqaservice.repository.QuestionTagRepository;
 import top.yeonon.huhuqaservice.repository.TagRepository;
 import top.yeonon.huhuqaservice.service.IQuestionService;
-import top.yeonon.huhuqaservice.vo.request.QuestionCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionDeleteRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionQueryRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionUpdateRequestVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionCreateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionDeleteResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionQueryResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionUpdateResponseVo;
 
 import java.util.List;
 import java.util.Set;
@@ -97,6 +97,7 @@ public class QuestionService implements IQuestionService {
             throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
         }
 
+
         return new QuestionQueryResponseVo(
                 question.getTitle(),
                 question.getContent(),
@@ -116,12 +117,15 @@ public class QuestionService implements IQuestionService {
         }
 
         Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
-        if (question == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        if (question == null
+                || question.getStatus() >= QuestionStatus.CLOSE.getCode()) {
+            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
         }
+
         if (questionRepository.existsByTitle(request.getTitle())) {
             throw new HuhuException(ErrMessage.EXIST_SAME_TITLE);
         }
+
         question = request.update(question);
         questionRepository.save(question);
 
@@ -135,9 +139,11 @@ public class QuestionService implements IQuestionService {
             throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
 
+        //防止他人修改问题
         Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
-        if (question == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        if (question == null
+                || question.getStatus() == QuestionStatus.CLOSE.getCode()) {
+            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
         }
 
         question.setStatus(QuestionStatus.CLOSE.getCode());

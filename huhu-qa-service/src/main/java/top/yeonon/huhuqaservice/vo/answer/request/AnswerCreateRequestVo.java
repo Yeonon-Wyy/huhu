@@ -1,35 +1,30 @@
-package top.yeonon.huhuqaservice.vo.request;
+package top.yeonon.huhuqaservice.vo.answer.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.List;
-import java.util.Set;
-
 /**
  * @Author yeonon
- * @date 2019/4/19 0019 19:00
+ * @date 2019/4/20 0020 17:41
  **/
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionCreateRequestVo {
+public class AnswerCreateRequestVo {
+
+    private Long questionId;
 
     private Long userId;
 
-    private String title;
-
     private String content;
 
-    private Set<String> tagNames;
-
-    //tag可以为空
     public boolean validate() {
-        return userId != null
+        return questionId != null
+                && questionId > 0
+                && userId != null
                 && userId > 0
-                && StringUtils.isNotEmpty(title)
                 && StringUtils.isNotEmpty(content);
     }
 }

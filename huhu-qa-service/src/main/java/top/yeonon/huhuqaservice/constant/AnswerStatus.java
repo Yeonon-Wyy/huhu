@@ -10,6 +10,7 @@ import lombok.Getter;
 public enum  AnswerStatus {
 
     NORMAL(0, "正常"),
+    CLOSE(100, "用户自行关闭"),
     INVALID(200, "违规");
 
     private int code;

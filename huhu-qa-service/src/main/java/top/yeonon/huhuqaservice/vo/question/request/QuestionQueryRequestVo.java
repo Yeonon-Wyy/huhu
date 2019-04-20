@@ -1,4 +1,4 @@
-package top.yeonon.huhuqaservice.vo.request;
+package top.yeonon.huhuqaservice.vo.question.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

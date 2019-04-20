@@ -1,14 +1,14 @@
 package top.yeonon.huhuqaservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhuqaservice.vo.request.QuestionCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionDeleteRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionQueryRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionUpdateRequestVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionCreateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionDeleteResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionQueryResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionUpdateResponseVo;
 
 /**
  * @Author yeonon

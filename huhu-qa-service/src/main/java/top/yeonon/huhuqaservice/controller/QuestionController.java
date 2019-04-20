@@ -2,6 +2,7 @@ package top.yeonon.huhuqaservice.controller;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
@@ -9,14 +10,15 @@ import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuqaservice.interceptor.annatation.CheckUserId;
 import top.yeonon.huhuqaservice.service.IQuestionService;
-import top.yeonon.huhuqaservice.vo.request.QuestionCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.request.QuestionUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.response.QuestionUpdateResponseVo;
+import top.yeonon.huhuqaservice.utils.QAUtils;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionDeleteRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionQueryRequestVo;
+import top.yeonon.huhuqaservice.vo.question.request.QuestionUpdateRequestVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionCreateResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionDeleteResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionQueryResponseVo;
+import top.yeonon.huhuqaservice.vo.question.response.QuestionUpdateResponseVo;
 
 /**
  * @Author yeonon
@@ -28,6 +30,9 @@ public class QuestionController {
 
     private final IQuestionService questionService;
 
+    @Value("${huhu.security.jwt.signKey}")
+    private String signKey;
+
     @Autowired
     public QuestionController(IQuestionService questionService) {
         this.questionService = questionService;
@@ -37,9 +42,7 @@ public class QuestionController {
     public QuestionCreateResponseVo createQuestion(@RequestBody QuestionCreateRequestVo request,
                                                    Authentication authentication) throws HuhuException {
         //获取当前用户ID
-        String token = ((OAuth2AuthenticationDetails) authentication.getDetails()).getTokenValue();
-        Claims body = CommonUtils.parseJwtToken(token, "huhu-project");
-        Long userId = Long.parseLong(String.valueOf(body.get("id")));
+        Long userId = QAUtils.parseUserIdFromAuthentication(authentication, signKey);
         request.setUserId(userId);
         //调用服务
         return questionService.createQuestion(request);
@@ -51,20 +54,20 @@ public class QuestionController {
         return questionService.queryQuestion(request);
     }
 
-    @PutMapping("{id}/{userId}")
-    @CheckUserId
+    @PutMapping("{id}")
     public QuestionUpdateResponseVo updateQuestion(@PathVariable("id") Long id,
-                                                   @PathVariable("userId") Long userId,
-                                                   @RequestBody QuestionUpdateRequestVo request) throws HuhuException {
+                                                   @RequestBody QuestionUpdateRequestVo request,
+                                                   Authentication authentication) throws HuhuException {
         request.setId(id);
+        Long userId = QAUtils.parseUserIdFromAuthentication(authentication, signKey);
         request.setUserId(userId);
         return questionService.updateQuestion(request);
     }
 
-    @DeleteMapping("{id}/{userId}")
-    @CheckUserId
+    @DeleteMapping("{id}")
     public QuestionDeleteResponseVo deleteQuestion(@PathVariable("id") Long id,
-                                                   @PathVariable("userId") Long userId) throws HuhuException {
+                                                   Authentication authentication) throws HuhuException {
+        Long userId = QAUtils.parseUserIdFromAuthentication(authentication, signKey);
         QuestionDeleteRequestVo request = new QuestionDeleteRequestVo(
                 id,
                 userId

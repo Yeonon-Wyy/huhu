@@ -1,6 +1,9 @@
 package top.yeonon.huhuqaservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import top.yeonon.huhuqaservice.entity.Question;
 
@@ -14,4 +17,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     boolean existsByTitle(String title);
 
     Question findByIdAndUserId(Long id, Long userId);
+
+    @Modifying
+    @Query("update Question q set q.answerCount = q.answerCount + 1 where q.id = :id")
+    void incrementAnswerCountById(@Param("id") Long id);
+
 }
