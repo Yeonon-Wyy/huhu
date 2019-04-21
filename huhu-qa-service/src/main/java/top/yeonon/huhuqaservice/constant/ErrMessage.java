@@ -12,7 +12,9 @@ public class ErrMessage {
 
     public static final String NOT_FOUND_QUESTION = "找不到该问题";
 
-    public static final String NOT_FOUND_ANSWER = "找不到该回答";
+    public static final String EXIST_QUESTION_FOLLOWER = "该用户已经关注该问题";
+
+    public static final String NOT_EXIST_QUESTION_FOLLOWER = "该用户之前没有关注该问题";
 
 
     public static final String NOT_ALLOW_ACTION = "非法操作";

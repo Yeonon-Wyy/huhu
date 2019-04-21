@@ -9,7 +9,8 @@ import lombok.Getter;
 @Getter
 public enum MailType {
 
-    FORGET_PASSWORD(1, "forget_password.html", "重置密码");
+    FORGET_PASSWORD(1, "forget_password.html", "重置密码"),
+    NEW_ANSWER_ALERT(2, "new_answer_alert.html", "您关注的问题有新的回答");
 
     private int code;
 

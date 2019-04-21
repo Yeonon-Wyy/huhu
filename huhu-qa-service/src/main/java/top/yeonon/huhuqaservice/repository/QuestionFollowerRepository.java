@@ -10,4 +10,6 @@ import top.yeonon.huhuqaservice.entity.QuestionFollower;
  **/
 @Repository
 public interface QuestionFollowerRepository extends JpaRepository<QuestionFollower, Long> {
+
+    QuestionFollower findByQuestionIdAndFollowerId(Long questionId, Long followerId);
 }

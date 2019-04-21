@@ -27,4 +27,9 @@ public class QuestionFollower {
 
     @Column(name = "follower_id", nullable = false, length = 11)
     private Long followerId;
+
+    public QuestionFollower(Long questionId, Long followerId) {
+        this.questionId = questionId;
+        this.followerId = followerId;
+    }
 }

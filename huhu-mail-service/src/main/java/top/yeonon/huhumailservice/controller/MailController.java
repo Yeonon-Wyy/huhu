@@ -38,4 +38,11 @@ public class MailController {
         request.setSubject(MailType.FORGET_PASSWORD.getSubject());
         mailService.sendHtmlMail(request, MailType.FORGET_PASSWORD.getTemplateName());
     }
+
+    @PostMapping("/send/question/new_answer_alert")
+    public void newAnswerAlert(@RequestBody TemplateMessageRequestVo request) throws MessagingException, HuhuException {
+        request.setFrom(from);
+        request.setSubject(MailType.NEW_ANSWER_ALERT.getSubject());
+        mailService.sendHtmlMail(request, MailType.NEW_ANSWER_ALERT.getTemplateName());
+    }
 }

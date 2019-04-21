@@ -13,8 +13,10 @@ import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuqaservice.constant.ErrMessage;
 import top.yeonon.huhuqaservice.constant.QuestionStatus;
 import top.yeonon.huhuqaservice.entity.Question;
+import top.yeonon.huhuqaservice.entity.QuestionFollower;
 import top.yeonon.huhuqaservice.entity.QuestionTag;
 import top.yeonon.huhuqaservice.entity.Tag;
+import top.yeonon.huhuqaservice.repository.QuestionFollowerRepository;
 import top.yeonon.huhuqaservice.repository.QuestionRepository;
 import top.yeonon.huhuqaservice.repository.QuestionTagRepository;
 import top.yeonon.huhuqaservice.repository.TagRepository;
@@ -38,12 +40,15 @@ public class QuestionService implements IQuestionService {
 
     private final TagRepository tagRepository;
 
+    private final QuestionFollowerRepository questionFollowerRepository;
+
     @Autowired
     public QuestionService(QuestionRepository questionRepository,
-                           QuestionTagRepository questionTagRepository, TagRepository tagRepository) {
+                           QuestionTagRepository questionTagRepository, TagRepository tagRepository, QuestionFollowerRepository questionFollowerRepository) {
         this.questionRepository = questionRepository;
         this.questionTagRepository = questionTagRepository;
         this.tagRepository = tagRepository;
+        this.questionFollowerRepository = questionFollowerRepository;
     }
 
     @Override
@@ -173,6 +178,62 @@ public class QuestionService implements IQuestionService {
                 request.getPageNum(),
                 request.getPageSize()
         );
+    }
+
+
+    @Override
+    @Transactional
+    public void followQuestion(QuestionFollowRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        if (!questionRepository.existsById(request.getQuestionId())) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        }
+
+        QuestionFollower questionFollower = questionFollowerRepository.findByQuestionIdAndFollowerId(
+                request.getQuestionId(),
+                request.getUserId());
+        if (questionFollower != null) {
+            throw new HuhuException(ErrMessage.EXIST_QUESTION_FOLLOWER);
+        }
+
+        questionFollower = new QuestionFollower(
+                request.getQuestionId(),
+                request.getUserId()
+        );
+
+        questionFollowerRepository.save(questionFollower);
+
+        //增加问题的关注数
+        questionRepository.incrementFollowerCountById(request.getQuestionId());
+
+    }
+
+    @Override
+    @Transactional
+    public void unFollowQuestion(QuestionUnFollowRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        if (!questionRepository.existsById(request.getQuestionId())) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        }
+
+        QuestionFollower questionFollower = questionFollowerRepository.findByQuestionIdAndFollowerId(
+                request.getQuestionId(),
+                request.getUserId());
+        if (questionFollower == null) {
+            throw new HuhuException(ErrMessage.NOT_EXIST_QUESTION_FOLLOWER);
+        }
+
+        //删除记录
+        questionFollowerRepository.deleteById(questionFollower.getId());
+
+        //减少question的followerCount
+        questionRepository.decrementFollowerCountById(request.getQuestionId());
     }
 
     /**

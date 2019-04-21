@@ -72,4 +72,26 @@ public class QuestionController {
 
         return questionService.deleteQuestion(request);
     }
+
+    @PostMapping("/follow/{questionId}")
+    public void followQuestion(@PathVariable("questionId") Long questionId,
+                               Authentication authentication) throws HuhuException {
+        Long userId = QAUtils.parseUserIdFromAuthentication(authentication, signKey);
+        QuestionFollowRequestVo request = new QuestionFollowRequestVo(
+                questionId,
+                userId
+        );
+        questionService.followQuestion(request);
+    }
+
+    @DeleteMapping("/follow/{questionId}")
+    public void unFollowQuestion(@PathVariable("questionId") Long questionId,
+                                 Authentication authentication) throws HuhuException {
+        Long userId = QAUtils.parseUserIdFromAuthentication(authentication, signKey);
+        QuestionUnFollowRequestVo request = new QuestionUnFollowRequestVo(
+                questionId,
+                userId
+        );
+        questionService.unFollowQuestion(request);
+    }
 }

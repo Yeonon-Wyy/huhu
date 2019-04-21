@@ -48,4 +48,16 @@ public interface IQuestionService {
      * @return  响应
      */
     QuestionQueryAllResponseVo queryAll(QuestionQueryAllRequestVo request);
+
+    /**
+     * 关注问题
+     * @param request 请求
+     */
+    void followQuestion(QuestionFollowRequestVo request) throws HuhuException;
+
+    /**
+     * 取消关注某问题
+     * @param request 请求
+     */
+    void unFollowQuestion(QuestionUnFollowRequestVo request) throws HuhuException;
 }
