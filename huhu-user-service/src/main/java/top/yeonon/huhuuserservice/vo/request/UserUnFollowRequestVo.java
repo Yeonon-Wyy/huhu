@@ -3,6 +3,7 @@ package top.yeonon.huhuuserservice.vo.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
  * @Author yeonon
@@ -18,9 +19,7 @@ public class UserUnFollowRequestVo {
     private Long unFollowId;
 
     public boolean validate() {
-        return userId != null
-                && userId > 0
-                && unFollowId != null
-                && unFollowId > 0;
+        return CommonUtils.chekcId(userId)
+                && CommonUtils.chekcId(unFollowId);
     }
 }

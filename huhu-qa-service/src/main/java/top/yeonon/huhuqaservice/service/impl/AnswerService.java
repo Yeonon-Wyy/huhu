@@ -14,14 +14,8 @@ import top.yeonon.huhuqaservice.entity.Answer;
 import top.yeonon.huhuqaservice.repository.AnswerRepository;
 import top.yeonon.huhuqaservice.repository.QuestionRepository;
 import top.yeonon.huhuqaservice.service.IAnswerService;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerBatchQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerBatchQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.answer.request.*;
+import top.yeonon.huhuqaservice.vo.answer.response.*;
 
 import java.util.List;
 
@@ -79,7 +73,7 @@ public class AnswerService implements IAnswerService {
         }
 
         //分页查询数据
-        Sort sort = new Sort(Sort.Direction.ASC, "approvalCount");
+        Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
         Page<Answer> answers = answerRepository.findAllByQuestionId(
                 request.getQuestionId(),
                 PageRequest.of(
@@ -145,6 +139,40 @@ public class AnswerService implements IAnswerService {
 
         answer.setStatus(AnswerStatus.CLOSE.getCode());
         return new AnswerDeleteResponseVo(answer.getId());
+    }
+
+    @Override
+    public AnswerBatchQueryByUserIdResponseVo queryAnswerByUserId(AnswerBatchQueryByUserIdRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
+        Page<Answer> answers = answerRepository.findAllByUserId(request.getUserId(),PageRequest.of(
+                request.getPageNum(),
+                request.getPageSize(),
+                sort
+        ));
+
+        List<AnswerBatchQueryByUserIdResponseVo.AnswerInfo> answerInfoList = Lists.newArrayList();
+        answers.forEach(answer -> {
+            answerInfoList.add(new AnswerBatchQueryByUserIdResponseVo.AnswerInfo(
+                    answer.getId(),
+                    answer.getUserId(),
+                    answer.getContent(),
+                    answer.getQuestionId(),
+                    questionRepository.findTitleById(answer.getQuestionId()),
+                    answer.getStatus(),
+                    answer.getCreateTime(),
+                    answer.getUpdateTime()
+            ));
+        });
+
+        return new AnswerBatchQueryByUserIdResponseVo(
+                answerInfoList,
+                request.getPageNum(),
+                request.getPageSize()
+        );
     }
 
 

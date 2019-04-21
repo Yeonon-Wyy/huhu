@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
  * @Author yeonon
@@ -21,10 +22,8 @@ public class AnswerCreateRequestVo {
     private String content;
 
     public boolean validate() {
-        return questionId != null
-                && questionId > 0
-                && userId != null
-                && userId > 0
+        return CommonUtils.chekcId(questionId)
+                && CommonUtils.chekcId(userId)
                 && StringUtils.isNotEmpty(content);
     }
 }

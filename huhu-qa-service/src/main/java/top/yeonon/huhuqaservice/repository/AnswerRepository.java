@@ -18,4 +18,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Page<Answer> findAllByQuestionId(Long questionId, Pageable pageable);
 
     Answer findByIdAndUserId(Long id, Long userId);
+
+    Page<Answer> findAllByUserId(Long userId, Pageable pageable);
 }

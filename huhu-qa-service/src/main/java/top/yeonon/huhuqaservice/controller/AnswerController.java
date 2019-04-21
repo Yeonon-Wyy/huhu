@@ -7,14 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuqaservice.service.IAnswerService;
 import top.yeonon.huhuqaservice.utils.QAUtils;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerBatchQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerBatchQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.answer.request.*;
+import top.yeonon.huhuqaservice.vo.answer.response.*;
 
 /**
  * @Author yeonon
@@ -44,6 +38,7 @@ public class AnswerController {
         return answerService.createAnswer(request);
     }
 
+    //查询该questionId下的所有问题
     @GetMapping("/{questionId}")
     public AnswerBatchQueryResponseVo batchQueryAnswer(@RequestBody AnswerBatchQueryRequestVo request,
                                                        @PathVariable("questionId") Long questionId,
@@ -54,6 +49,17 @@ public class AnswerController {
         request.setPageSize(pageSize);
         return answerService.batchQueryAnswer(request);
     }
+
+    //查询某个用户的所有回答
+    @GetMapping
+    public AnswerBatchQueryByUserIdResponseVo batchQueryByUserId(@RequestBody AnswerBatchQueryByUserIdRequestVo request,
+                                                                 @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                                 @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
+        request.setPageNum(pageNum);
+        request.setPageSize(pageSize);
+        return answerService.queryAnswerByUserId(request);
+    }
+
 
     @PutMapping("/{id}")
     public AnswerUpdateResponseVo updateAnswer(@RequestBody AnswerUpdateRequestVo request,

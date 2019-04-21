@@ -22,4 +22,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("update Question q set q.answerCount = q.answerCount + 1 where q.id = :id")
     void incrementAnswerCountById(@Param("id") Long id);
 
+    @Query("select q.title from Question q WHERE q.id = :id")
+    String findTitleById(@Param("id") Long id);
 }

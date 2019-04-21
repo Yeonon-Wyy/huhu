@@ -41,4 +41,9 @@ public class CommonUtils {
                 .parseClaimsJws(jwtToken)
                 .getBody();
     }
+
+    public static boolean chekcId(Long id) {
+        return id != null
+                && id > 0;
+    }
 }

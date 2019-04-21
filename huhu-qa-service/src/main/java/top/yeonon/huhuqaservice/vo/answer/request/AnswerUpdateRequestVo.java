@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuqaservice.entity.Answer;
 
 import java.util.Date;
@@ -24,10 +25,8 @@ public class AnswerUpdateRequestVo {
     private String content;
 
     public boolean validate() {
-        return id != null
-                && id > 0
-                && userId != null
-                && userId > 0;
+        return CommonUtils.chekcId(id)
+                && CommonUtils.chekcId(userId);
     }
 
     public Answer update(Answer answer) {

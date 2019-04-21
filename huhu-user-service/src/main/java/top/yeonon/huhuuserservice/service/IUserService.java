@@ -1,6 +1,7 @@
 package top.yeonon.huhuuserservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ServerResponse;
 import top.yeonon.huhuuserservice.vo.request.*;
 import top.yeonon.huhuuserservice.vo.response.*;
 
@@ -68,4 +69,5 @@ public interface IUserService {
 
 
     void updatePassword(UpdatePassRequestVo request) throws HuhuException;
+
 }

@@ -1,14 +1,8 @@
 package top.yeonon.huhuqaservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerBatchQueryRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerDeleteRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.request.AnswerUpdateRequestVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerBatchQueryResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerCreateResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerDeleteResponseVo;
-import top.yeonon.huhuqaservice.vo.answer.response.AnswerUpdateResponseVo;
+import top.yeonon.huhuqaservice.vo.answer.request.*;
+import top.yeonon.huhuqaservice.vo.answer.response.*;
 
 /**
  * @Author yeonon
@@ -46,4 +40,11 @@ public interface IAnswerService {
      */
     AnswerDeleteResponseVo deleteAnswer(AnswerDeleteRequestVo request) throws HuhuException;
 
+
+    /**
+     * 根据用户ID来查询
+     * @param request 请求对象
+     * @return 响应
+     */
+    AnswerBatchQueryByUserIdResponseVo queryAnswerByUserId(AnswerBatchQueryByUserIdRequestVo request) throws HuhuException;
 }

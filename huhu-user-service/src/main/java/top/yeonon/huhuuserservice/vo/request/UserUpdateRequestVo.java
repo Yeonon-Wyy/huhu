@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.entity.User;
 
 /**
@@ -24,8 +25,7 @@ public class UserUpdateRequestVo {
     private Integer degree;
 
     public boolean validate() {
-        return id != null
-                && id > 0;
+        return CommonUtils.chekcId(id);
     }
 
     public User updateUser(User user) {

@@ -7,20 +7,20 @@ import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
  * @Author yeonon
- * @date 2019/4/20 0020 19:19
+ * @date 2019/4/21 0021 13:13
  **/
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AnswerDeleteRequestVo {
-
-    private Long id;
+@NoArgsConstructor
+public class AnswerBatchQueryByUserIdRequestVo {
 
     private Long userId;
 
-    public boolean validate() {
-        return CommonUtils.chekcId(id)
-                && CommonUtils.chekcId(userId);
-    }
+    private Integer pageNum;
 
+    private Integer pageSize;
+
+    public boolean validate() {
+        return CommonUtils.chekcId(userId);
+    }
 }

@@ -3,6 +3,7 @@ package top.yeonon.huhuqaservice.vo.answer.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
  * 答案不能脱离问题单独存在，而且本身内容算不是多，也不存在私密信息，故直接批量分页获取即可
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AnswerBatchQueryRequestVo {
 
+
     private Long questionId;
 
     private Integer pageNum;
@@ -22,8 +24,6 @@ public class AnswerBatchQueryRequestVo {
 
 
     public boolean validate() {
-        return questionId != null
-                && questionId > 0;
-
+        return CommonUtils.chekcId(questionId);
     }
 }
