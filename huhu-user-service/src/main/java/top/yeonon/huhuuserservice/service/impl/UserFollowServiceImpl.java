@@ -30,7 +30,7 @@ import java.util.List;
  * @date 2019/4/14 0014 17:34
  **/
 @Service
-public class UserFollowService implements IUserFollowService {
+public class UserFollowServiceImpl implements IUserFollowService {
 
     private final UserRepository userRepository;
 
@@ -39,9 +39,9 @@ public class UserFollowService implements IUserFollowService {
     private final UserFollowingRepository userFollowingRepository;
 
     @Autowired
-    public UserFollowService(UserRepository userRepository,
-                       UserFollowerRepository userFollowerRepository,
-                       UserFollowingRepository userFollowingRepository) {
+    public UserFollowServiceImpl(UserRepository userRepository,
+                                 UserFollowerRepository userFollowerRepository,
+                                 UserFollowingRepository userFollowingRepository) {
         this.userRepository = userRepository;
         this.userFollowerRepository = userFollowerRepository;
         this.userFollowingRepository = userFollowingRepository;

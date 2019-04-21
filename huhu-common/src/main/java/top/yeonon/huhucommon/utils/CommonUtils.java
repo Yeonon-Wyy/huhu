@@ -27,9 +27,11 @@ public class CommonUtils {
         final char[] chars = "1234567890QWERTYUIOPASDFGHJKLZXCVBNM".toCharArray();
         Random random = new Random();
         StringBuffer buffer = new StringBuffer();
-        int index;   //获取随机chars下标
+        //获取随机chars下标
+        int index;
         for (int i = 0; i < x; i++) {
-            index = random.nextInt(chars.length);  //获取随机chars下标
+            //获取随机chars下标
+            index = random.nextInt(chars.length);
             buffer.append(chars[index]);
         }
         return buffer.toString();

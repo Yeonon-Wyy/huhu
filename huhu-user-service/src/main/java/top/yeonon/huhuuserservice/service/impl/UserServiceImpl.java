@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Service
 @Slf4j
-public class UserService implements IUserService {
+public class UserServiceImpl implements IUserService {
 
     private final UserRepository userRepository;
 
@@ -45,7 +45,7 @@ public class UserService implements IUserService {
     private final HuhuMailClient huhuMailClient;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisTemplate<Object, Object> redisTemplate, HuhuMailClient huhuMailClient) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisTemplate<Object, Object> redisTemplate, HuhuMailClient huhuMailClient) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.redisTemplate = redisTemplate;

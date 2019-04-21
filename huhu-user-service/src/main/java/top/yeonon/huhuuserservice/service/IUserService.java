@@ -64,9 +64,20 @@ public interface IUserService {
     //2. 用户拿到验证码，再次发起请求，此时前端应该持有用户名，故不需要用户再次提供，由前端填充即可，验证码需要用户提供
     //3. 验证通过后，用户输入新密码，然后更新用户信息即可，如果用户此时处于登录状态，则另其重新登录
 
+
+    /**
+     * 忘记密码服务
+     * @param request 请求对象
+     * @throws HuhuException 可能抛出的异常
+     */
     void forgetPass(ForgetPassRequestVo request) throws HuhuException;
 
 
+    /**
+     * 更新密码
+     * @param request 请求对象（包含上一个步骤中得到的验证码）
+     * @throws HuhuException 可能抛出的异常
+     */
     void updatePassword(UpdatePassRequestVo request) throws HuhuException;
 
 }

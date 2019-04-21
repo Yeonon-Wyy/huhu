@@ -24,7 +24,7 @@ import java.util.List;
  * @date 2019/4/20 0020 17:40
  **/
 @Service
-public class AnswerService implements IAnswerService {
+public class AnswerServiceImpl implements IAnswerService {
 
     private final QuestionRepository questionRepository;
 
@@ -32,8 +32,8 @@ public class AnswerService implements IAnswerService {
 
 
     @Autowired
-    public AnswerService(QuestionRepository questionRepository,
-                         AnswerRepository answerRepository) {
+    public AnswerServiceImpl(QuestionRepository questionRepository,
+                             AnswerRepository answerRepository) {
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
     }

@@ -15,6 +15,7 @@ public interface ICommentService {
      * 新建评论（对问题）
      * @param request 请求对象
      * @return 响应对象
+     * @throws HuhuException 可能抛出的异常
      */
     CommentCreateResponseVo createQuestionComment(QuestionCommentCreateRequestVo request) throws HuhuException;
 
@@ -22,6 +23,7 @@ public interface ICommentService {
      * 新建评论（对答案）
      * @param request 请求对象
      * @return 响应对象
+     * @throws HuhuException 可能抛出的异常
      */
     CommentCreateResponseVo createAnswerComment(AnswerCommentCreateRequestVo request) throws HuhuException;
 }

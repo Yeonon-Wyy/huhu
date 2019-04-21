@@ -11,5 +11,10 @@ import top.yeonon.huhuqaservice.entity.Tag;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
+    /**
+     * 通过名称查找记录
+     * @param name 名称
+     * @return 存在则返回相应记录，否则返回null
+     */
     Tag findByName(String name);
 }

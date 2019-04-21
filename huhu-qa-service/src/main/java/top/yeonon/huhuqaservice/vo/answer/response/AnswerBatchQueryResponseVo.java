@@ -26,8 +26,10 @@ public class AnswerBatchQueryResponseVo {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnswerInfo {
-        private Long id; //用于获取关联的评论
-        private Long userId; //用于获取用户信息，标识答案所属
+        //用于获取关联的评论
+        private Long id;
+        //用于获取用户信息，标识答案所属
+        private Long userId;
         private String content;
         private Integer status;
         private Long approvalCount;

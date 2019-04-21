@@ -14,6 +14,7 @@ public interface IAnswerService {
      * 新建答案
      * @param request 请求
      * @return 响应
+     * @throws HuhuException 可能抛出的异常
      */
     AnswerCreateResponseVo createAnswer(AnswerCreateRequestVo request) throws HuhuException;
 
@@ -21,7 +22,7 @@ public interface IAnswerService {
      * 批量分页获取回答
      * @param request 请求
      * @return 响应
-     * @throws HuhuException
+     * @throws HuhuException 可能抛出的异常
      */
     AnswerBatchQueryResponseVo batchQueryAnswer(AnswerBatchQueryRequestVo request) throws HuhuException;
 
@@ -29,6 +30,7 @@ public interface IAnswerService {
      * 更新答案内容
      * @param request 请求
      * @return 响应
+     * @throws HuhuException 可能抛出的异常
      */
     AnswerUpdateResponseVo updateAnswer(AnswerUpdateRequestVo request) throws HuhuException;
 
@@ -37,6 +39,7 @@ public interface IAnswerService {
      * 删除答案（其实只是关闭答案）
      * @param request 请求
      * @return 响应
+     * @throws HuhuException 可能抛出的异常
      */
     AnswerDeleteResponseVo deleteAnswer(AnswerDeleteRequestVo request) throws HuhuException;
 
@@ -45,6 +48,7 @@ public interface IAnswerService {
      * 根据用户ID来查询
      * @param request 请求对象
      * @return 响应
+     * @throws HuhuException 可能抛出的异常
      */
     AnswerBatchQueryByUserIdResponseVo queryAnswerByUserId(AnswerBatchQueryByUserIdRequestVo request) throws HuhuException;
 }

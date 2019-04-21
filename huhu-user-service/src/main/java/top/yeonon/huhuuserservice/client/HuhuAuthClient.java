@@ -15,7 +15,10 @@ public interface HuhuAuthClient {
 
     String AUTH_TOKEN = "Authorization";
 
-    //用open-feign消费服务的时候，需要传递token header
+    /**
+     * 调用生产者服务，Open-Feign需要自己传递token，不过可以写一个OpenFeign拦截器来实现，两种方法皆可，自行选择
+     * @param token JWT
+     */
     @DeleteMapping(value = "/oath/users/logout")
     void logout(@RequestHeader(AUTH_TOKEN) String token);
 }

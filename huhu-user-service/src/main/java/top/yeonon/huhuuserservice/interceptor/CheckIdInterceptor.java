@@ -23,7 +23,7 @@ import java.util.Map;
 @Component
 public class CheckIdInterceptor implements HandlerInterceptor {
 
-    String AUTH_TOKEN = "Authorization";
+    private static final String AUTH_TOKEN = "Authorization";
 
 
     private final HuhuSecurityProperties huhuSecurityProperties;

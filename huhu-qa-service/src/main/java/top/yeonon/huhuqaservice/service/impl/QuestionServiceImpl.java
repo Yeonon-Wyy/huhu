@@ -32,7 +32,7 @@ import java.util.Set;
  * @date 2019/4/19 0019 19:03
  **/
 @Service
-public class QuestionService implements IQuestionService {
+public class QuestionServiceImpl implements IQuestionService {
 
     private final QuestionRepository questionRepository;
 
@@ -43,8 +43,8 @@ public class QuestionService implements IQuestionService {
     private final QuestionFollowerRepository questionFollowerRepository;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository,
-                           QuestionTagRepository questionTagRepository, TagRepository tagRepository, QuestionFollowerRepository questionFollowerRepository) {
+    public QuestionServiceImpl(QuestionRepository questionRepository,
+                               QuestionTagRepository questionTagRepository, TagRepository tagRepository, QuestionFollowerRepository questionFollowerRepository) {
         this.questionRepository = questionRepository;
         this.questionTagRepository = questionTagRepository;
         this.tagRepository = tagRepository;

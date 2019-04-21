@@ -23,7 +23,7 @@ import javax.mail.internet.MimeMessage;
  **/
 @Slf4j
 @Service
-public class MailService implements IMailService {
+public class MailServiceImpl implements IMailService {
 
     private final JavaMailSender mailSender;
 
@@ -32,7 +32,9 @@ public class MailService implements IMailService {
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Autowired
-    public MailService(JavaMailSender mailSender, TemplateEngine templateEngine, ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+    public MailServiceImpl(JavaMailSender mailSender,
+                           TemplateEngine templateEngine,
+                           ThreadPoolTaskExecutor threadPoolTaskExecutor) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.threadPoolTaskExecutor = threadPoolTaskExecutor;
@@ -51,8 +53,9 @@ public class MailService implements IMailService {
         });
     }
 
+
     @Override
-    public void sendChangePassValidateCodeMail(TemplateMessageRequestVo request, String templateName) throws HuhuException {
+    public void sendHtmlMail(TemplateMessageRequestVo request, String templateName) throws HuhuException {
 
 
         if (!request.validate()) {

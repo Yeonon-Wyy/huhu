@@ -11,6 +11,11 @@ import top.yeonon.huhuauthserver.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    /**
+     * 根据用户名查找用户对象
+     * @param username 用户名
+     * @return 存在则返回相应记录，否则返回null
+     */
     User findByUsername(String username);
 
 }

@@ -17,7 +17,7 @@ public class JwtProperties {
 
     private static final Integer DEFAULT_REFRESH_TOKEN_EXPIRE_TIME = 30 * 24 * 60 * 60; //30 days
 
-    private String SignKey;
+    private String signKey;
 
     //有效时间
     private Integer accessTokenExpireTime = DEFAULT_ACCESS_TOKEN_EXPIRE_TIME;

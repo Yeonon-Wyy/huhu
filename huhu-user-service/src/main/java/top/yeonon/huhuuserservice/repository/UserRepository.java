@@ -15,14 +15,34 @@ import java.util.Collection;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    /**
+     * 判断是否存在满足条件的记录
+     * @param username 用户名
+     * @return true表示存在，false表示不存在
+     */
     boolean existsByUsername(String username);
 
-    boolean existsByIdAndUsername(Long id, String username);
-
+    /**
+     * 判断是否存在满足条件的记录
+     * @param username 用户名
+     * @param email 邮箱
+     * @return true表示存在，false表示不存在
+     */
     boolean existsByUsernameAndEmail(String username, String email);
 
+    /**
+     * 根据ID列表分页的查询记录
+     * @param ids id列表
+     * @param pageRequest 页请求对象（包含size,num,sort等）
+     * @return 包含用户信息的分页对象
+     */
     Page<User> findAllByIdIn(Collection<Long> ids, Pageable pageRequest);
 
+    /**
+     * 根据用户名查找记录
+     * @param username 用户名
+     * @return 存在则返回相应记录，否则返回null
+     */
     User findByUsername(String username);
 
 

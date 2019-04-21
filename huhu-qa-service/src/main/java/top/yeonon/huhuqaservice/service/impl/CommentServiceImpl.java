@@ -20,7 +20,7 @@ import top.yeonon.huhuqaservice.vo.comment.response.CommentCreateResponseVo;
  * @date 2019/4/21 0021 19:19
  **/
 @Service
-public class CommentService implements ICommentService {
+public class CommentServiceImpl implements ICommentService {
 
     private final CommentRepository commentRepository;
 
@@ -33,11 +33,11 @@ public class CommentService implements ICommentService {
     private final AnswerRepository answerRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository,
-                          QuestionCommentRepository questionCommentRepository,
-                          QuestionRepository questionRepository,
-                          AnswerCommentRepository answerCommentRepository,
-                          AnswerRepository answerRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository,
+                              QuestionCommentRepository questionCommentRepository,
+                              QuestionRepository questionRepository,
+                              AnswerCommentRepository answerCommentRepository,
+                              AnswerRepository answerRepository) {
         this.commentRepository = commentRepository;
         this.questionCommentRepository = questionCommentRepository;
         this.questionRepository = questionRepository;
