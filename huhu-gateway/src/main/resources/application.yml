@@ -1,0 +1,36 @@
+
+server:
+  port: 4000
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.94.156.44:8848
+    gateway:
+      routes:
+      - id: huhu-user-service
+        uri: lb://huhu-user-service
+        predicates:
+          - Path=/huhu-user-service/**
+      - id: huhu-qa-service
+        uri: lb://huhu-qa-service
+        predicates:
+          - Path=/huhu-qa-service/**
+      - id: huhu-auth-service
+        uri: lb://huhu-auth-service
+        predicates:
+          - Path=/huhu-auth-service/**
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+  application:
+    name: huhu-gateway
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+
