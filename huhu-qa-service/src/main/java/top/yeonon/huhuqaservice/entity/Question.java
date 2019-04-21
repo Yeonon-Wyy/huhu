@@ -3,7 +3,6 @@ package top.yeonon.huhuqaservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 import top.yeonon.huhuqaservice.constant.QuestionStatus;
 
 import javax.persistence.*;
