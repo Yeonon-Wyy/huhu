@@ -27,4 +27,13 @@ public class AnswerComment {
 
     @Column(name = "comment_id", nullable = false, length = 11)
     private Long commentId;
+
+    @Column(name = "user_id", nullable = false, length = 11)
+    private Long userId;
+
+    public AnswerComment(Long answerId, Long commentId, Long userId) {
+        this.answerId = answerId;
+        this.commentId = commentId;
+        this.userId = userId;
+    }
 }

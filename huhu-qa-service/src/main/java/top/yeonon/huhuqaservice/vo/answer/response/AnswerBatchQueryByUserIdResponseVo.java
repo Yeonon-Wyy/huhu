@@ -29,6 +29,8 @@ public class AnswerBatchQueryByUserIdResponseVo {
         private Long id;
         private Long userId;
         private String content;
+        private Long approvalCount;
+        private Long commentCount;
         private Long questionId;
         private String questionTitle;
         private Integer status;

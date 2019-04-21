@@ -19,6 +19,8 @@ public class QuestionQueryResponseVo {
 
     private String content;
 
+    private Integer commentCount;
+
     private Integer followerCount;
 
     private Integer answerCount;

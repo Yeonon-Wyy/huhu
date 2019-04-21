@@ -103,6 +103,7 @@ public class QuestionService implements IQuestionService {
         return new QuestionQueryResponseVo(
                 question.getTitle(),
                 question.getContent(),
+                question.getCommentCount(),
                 question.getFollowerCount(),
                 question.getAnswerCount(),
                 question.getStatus(),

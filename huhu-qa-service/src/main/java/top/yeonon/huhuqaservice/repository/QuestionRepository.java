@@ -30,6 +30,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("update Question q set q.followerCount = q.followerCount - 1 where q.id = :id")
     void decrementFollowerCountById(@Param("id") Long id);
 
+    @Modifying
+    @Query("update Question q set q.commentCount = q.commentCount + 1 where q.id = :id")
+    void incrementCommentCountById(@Param("id") Long id);
+
     @Query("select q.title from Question q WHERE q.id = :id")
     String findTitleById(@Param("id") Long id);
 

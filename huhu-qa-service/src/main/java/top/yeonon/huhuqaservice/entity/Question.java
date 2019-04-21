@@ -3,6 +3,7 @@ package top.yeonon.huhuqaservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import top.yeonon.huhuqaservice.constant.QuestionStatus;
 
 import javax.persistence.*;
@@ -36,6 +37,9 @@ public class Question {
     @Column(name = "answer_count", nullable = false, length = 20)
     private Integer answerCount;
 
+    @Column(name = "comment_count", nullable = false, length = 20)
+    private Integer commentCount;
+
     @Column(name = "status", nullable = false, length = 4)
     private Integer status;
 
@@ -53,6 +57,7 @@ public class Question {
         this.content = content;
         this.userId = userId;
 
+        this.commentCount = 0;
         this.followerCount = 0;
         this.answerCount = 0;
         this.status = QuestionStatus.NORMAL.getCode();

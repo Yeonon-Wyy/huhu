@@ -160,6 +160,8 @@ public class AnswerService implements IAnswerService {
                     answer.getId(),
                     answer.getUserId(),
                     answer.getContent(),
+                    answer.getApprovalCount(),
+                    answer.getCommentCount(),
                     answer.getQuestionId(),
                     questionRepository.findTitleById(answer.getQuestionId()),
                     answer.getStatus(),

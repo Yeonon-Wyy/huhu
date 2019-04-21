@@ -10,4 +10,6 @@ import top.yeonon.huhuqaservice.entity.QuestionComment;
  **/
 @Repository
 public interface QuestionCommentRepository extends JpaRepository<QuestionComment, Long> {
+
+    boolean existsByUserIdAndQuestionId(Long userId, Long questionId);
 }
