@@ -21,6 +21,6 @@ public class AnswerBatchQueryByUserIdRequestVo {
     private Integer pageSize;
 
     public boolean validate() {
-        return CommonUtils.chekcId(userId);
+        return CommonUtils.checkId(userId);
     }
 }

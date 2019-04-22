@@ -22,6 +22,14 @@ public class AnswerBatchQueryByUserIdResponseVo {
 
     private Integer pageSize;
 
+    private boolean hasNext;
+
+    private boolean hasPrevious;
+
+    private boolean isFirst;
+
+    private boolean isLast;
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

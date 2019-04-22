@@ -22,8 +22,7 @@ public class QuestionCommentCreateRequestVo {
     private String content;
 
     public boolean validate() {
-        return CommonUtils.chekcId(userId)
-                && CommonUtils.chekcId(questionId)
+        return CommonUtils.checkId(userId, questionId)
                 && StringUtils.isNotEmpty(content);
     }
 }

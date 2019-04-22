@@ -8,8 +8,11 @@ import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuqaservice.service.ICommentService;
 import top.yeonon.huhuqaservice.utils.QAUtils;
 import top.yeonon.huhuqaservice.vo.comment.request.AnswerCommentCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.comment.request.AnswerCommentQueryAllRequestVo;
 import top.yeonon.huhuqaservice.vo.comment.request.QuestionCommentCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.comment.request.QuestionCommentQueryAllRequestVo;
 import top.yeonon.huhuqaservice.vo.comment.response.CommentCreateResponseVo;
+import top.yeonon.huhuqaservice.vo.comment.response.CommentQueryAllResponseVo;
 
 /**
  * @Author yeonon
@@ -48,4 +51,29 @@ public class CommentController {
         request.setAnswerId(answerId);
         return commentService.createAnswerComment(request);
     }
+
+    @GetMapping("/question/{questionId}")
+    public CommentQueryAllResponseVo queryAllQuestionComment(@PathVariable("questionId") Long questionId,
+                                                             @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
+        QuestionCommentQueryAllRequestVo request = new QuestionCommentQueryAllRequestVo(
+                questionId,
+                pageNum,
+                pageSize
+        );
+        return commentService.queryAllQuestionComment(request);
+    }
+
+    @GetMapping("/answer/{answerId}")
+    public CommentQueryAllResponseVo queryAllAnswerComment(@PathVariable("answerId") Long answerId,
+                                                           @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
+        AnswerCommentQueryAllRequestVo request = new AnswerCommentQueryAllRequestVo(
+                answerId,
+                pageNum,
+                pageSize
+        );
+        return commentService.queryAllAnswerComment(request);
+    }
+
 }

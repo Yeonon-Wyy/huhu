@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.Base64Codec;
 import org.springframework.util.DigestUtils;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -44,8 +45,8 @@ public class CommonUtils {
                 .getBody();
     }
 
-    public static boolean chekcId(Long id) {
-        return id != null
-                && id > 0;
+    public static boolean checkId(Long ...ids) {
+        return Arrays.stream(ids)
+                .allMatch(id -> id != null && id > 0);
     }
 }

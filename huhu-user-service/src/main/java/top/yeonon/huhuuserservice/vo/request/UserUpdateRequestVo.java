@@ -25,7 +25,7 @@ public class UserUpdateRequestVo {
     private Integer degree;
 
     public boolean validate() {
-        return CommonUtils.chekcId(id);
+        return CommonUtils.checkId(id);
     }
 
     public User updateUser(User user) {

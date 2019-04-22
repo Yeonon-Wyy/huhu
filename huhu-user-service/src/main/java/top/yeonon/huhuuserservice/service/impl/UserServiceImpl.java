@@ -183,7 +183,11 @@ public class UserServiceImpl implements IUserService {
         return new UserBatchQueryResponseVo(
                 userInfoList,
                 request.getPageNum(),
-                request.getPageSize()
+                request.getPageSize(),
+                userList.hasNext(),
+                userList.hasPrevious(),
+                userList.isFirst(),
+                userList.isLast()
         );
     }
 

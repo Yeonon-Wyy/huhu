@@ -177,7 +177,11 @@ public class QuestionServiceImpl implements IQuestionService {
         return new QuestionQueryAllResponseVo(
                 questionInfoList,
                 request.getPageNum(),
-                request.getPageSize()
+                request.getPageSize(),
+                questions.hasNext(),
+                questions.hasPrevious(),
+                questions.isFirst(),
+                questions.isLast()
         );
     }
 

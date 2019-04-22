@@ -19,7 +19,6 @@ public class QuestionFollowRequestVo {
     private Long userId;
 
     public boolean validate() {
-        return CommonUtils.chekcId(questionId)
-                && CommonUtils.chekcId(userId);
+        return CommonUtils.checkId(questionId, userId);
     }
 }

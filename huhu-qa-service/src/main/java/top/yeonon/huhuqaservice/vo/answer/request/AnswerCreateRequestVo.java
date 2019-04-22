@@ -22,8 +22,7 @@ public class AnswerCreateRequestVo {
     private String content;
 
     public boolean validate() {
-        return CommonUtils.chekcId(questionId)
-                && CommonUtils.chekcId(userId)
+        return CommonUtils.checkId(questionId, userId)
                 && StringUtils.isNotEmpty(content);
     }
 }

@@ -1,8 +1,12 @@
 package top.yeonon.huhuqaservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import top.yeonon.huhuqaservice.entity.AnswerComment;
+
+import java.util.List;
 
 /**
  * @Author yeonon
@@ -18,4 +22,12 @@ public interface AnswerCommentRepository extends JpaRepository<AnswerComment, Lo
      * @return true表示存在，false表示不存在
      */
     boolean existsByUserIdAndAnswerId(Long userId, Long answerId);
+
+    /**
+     * 根据回答ID查找所有的commentId
+     * @param answerId 回答ID
+     * @return commentId 列表
+     */
+    @Query("select ac.commentId from AnswerComment ac where ac.answerId = :answerId")
+    List<Long> findCommentIdByAnswerId(@Param("answerId") Long answerId);
 }

@@ -100,7 +100,11 @@ public class AnswerServiceImpl implements IAnswerService {
         return new AnswerBatchQueryResponseVo(
                 answerInfoList,
                 request.getPageNum(),
-                request.getPageSize()
+                request.getPageSize(),
+                answers.hasNext(),
+                answers.hasPrevious(),
+                answers.isFirst(),
+                answers.isLast()
         );
 
     }
@@ -173,7 +177,11 @@ public class AnswerServiceImpl implements IAnswerService {
         return new AnswerBatchQueryByUserIdResponseVo(
                 answerInfoList,
                 request.getPageNum(),
-                request.getPageSize()
+                request.getPageSize(),
+                answers.hasNext(),
+                answers.hasPrevious(),
+                answers.isFirst(),
+                answers.isLast()
         );
     }
 

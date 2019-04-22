@@ -19,7 +19,6 @@ public class UserUnFollowRequestVo {
     private Long unFollowId;
 
     public boolean validate() {
-        return CommonUtils.chekcId(userId)
-                && CommonUtils.chekcId(unFollowId);
+        return CommonUtils.checkId(userId, unFollowId);
     }
 }

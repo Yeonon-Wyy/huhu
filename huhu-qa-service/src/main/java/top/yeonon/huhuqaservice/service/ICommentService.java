@@ -1,9 +1,9 @@
 package top.yeonon.huhuqaservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhuqaservice.vo.comment.request.AnswerCommentCreateRequestVo;
-import top.yeonon.huhuqaservice.vo.comment.request.QuestionCommentCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.comment.request.*;
 import top.yeonon.huhuqaservice.vo.comment.response.CommentCreateResponseVo;
+import top.yeonon.huhuqaservice.vo.comment.response.CommentQueryAllResponseVo;
 
 /**
  * @Author yeonon
@@ -26,4 +26,23 @@ public interface ICommentService {
      * @throws HuhuException 可能抛出的异常
      */
     CommentCreateResponseVo createAnswerComment(AnswerCommentCreateRequestVo request) throws HuhuException;
+
+
+    /**
+     * 查询某个问题的所有评论
+     * @param request 请求对象
+     * @return 包含分页信息的对象
+     * @throws HuhuException 可能抛出的异常
+     */
+    CommentQueryAllResponseVo queryAllQuestionComment(QuestionCommentQueryAllRequestVo request) throws HuhuException;
+
+    /**
+     * 查询某个回答下的所有评论
+     * @param request 请求对象
+     * @return 包含分页信息的对象
+     * @throws HuhuException 可能抛出的异常
+     */
+    CommentQueryAllResponseVo queryAllAnswerComment(AnswerCommentQueryAllRequestVo request) throws HuhuException;
+
+
 }

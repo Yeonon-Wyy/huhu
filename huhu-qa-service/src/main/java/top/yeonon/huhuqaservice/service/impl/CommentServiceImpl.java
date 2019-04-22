@@ -1,6 +1,10 @@
 package top.yeonon.huhuqaservice.service.impl;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
@@ -12,8 +16,13 @@ import top.yeonon.huhuqaservice.entity.QuestionComment;
 import top.yeonon.huhuqaservice.repository.*;
 import top.yeonon.huhuqaservice.service.ICommentService;
 import top.yeonon.huhuqaservice.vo.comment.request.AnswerCommentCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.comment.request.AnswerCommentQueryAllRequestVo;
 import top.yeonon.huhuqaservice.vo.comment.request.QuestionCommentCreateRequestVo;
+import top.yeonon.huhuqaservice.vo.comment.request.QuestionCommentQueryAllRequestVo;
 import top.yeonon.huhuqaservice.vo.comment.response.CommentCreateResponseVo;
+import top.yeonon.huhuqaservice.vo.comment.response.CommentQueryAllResponseVo;
+
+import java.util.List;
 
 /**
  * @Author yeonon
@@ -108,6 +117,96 @@ public class CommentServiceImpl implements ICommentService {
         //增加answer中commentCount
         answerRepository.incrementCommentCountById(request.getAnswerId());
         return new CommentCreateResponseVo(comment.getId());
+    }
+
+    @Override
+    public CommentQueryAllResponseVo queryAllQuestionComment(QuestionCommentQueryAllRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        if (!questionRepository.existsById(request.getQuestionId())) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+        }
+
+
+        List<Long> commentIdList = questionCommentRepository.findCommentIdByQuestionId(request.getQuestionId());
+
+        Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
+        Page<Comment> commentList = commentRepository.findAllByIdIn(commentIdList, PageRequest.of(
+                request.getPageNum(),
+                request.getPageSize(),
+                sort
+        ));
+        List<CommentQueryAllResponseVo.CommentInfo> commentInfoList = Lists.newArrayList();
+        commentList.forEach(comment -> {
+            commentInfoList.add(new CommentQueryAllResponseVo.CommentInfo(
+                    comment.getId(),
+                    comment.getUserId(),
+                    comment.getStatus(),
+                    comment.getContent(),
+                    comment.getType(),
+                    comment.getApprovalCount(),
+                    comment.getCreateTime(),
+                    comment.getUpdateTime()
+            ));
+        });
+
+        return new CommentQueryAllResponseVo(
+                commentInfoList,
+                request.getPageNum(),
+                request.getPageSize(),
+                commentList.hasNext(),
+                commentList.hasPrevious(),
+                commentList.isFirst(),
+                commentList.isLast()
+        );
+
+
+    }
+
+    @Override
+    public CommentQueryAllResponseVo queryAllAnswerComment(AnswerCommentQueryAllRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        if (!answerRepository.existsById(request.getAnswerId())) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_ANSWER);
+        }
+
+        List<Long> commentIdList = answerCommentRepository.findCommentIdByAnswerId(request.getAnswerId());
+        Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
+        Page<Comment> commentList = commentRepository.findAllByIdIn(commentIdList, PageRequest.of(
+                request.getPageNum(),
+                request.getPageSize(),
+                sort
+        ));
+
+        List<CommentQueryAllResponseVo.CommentInfo> commentInfoList = Lists.newArrayList();
+        commentList.forEach(comment -> {
+            commentInfoList.add(new CommentQueryAllResponseVo.CommentInfo(
+                    comment.getId(),
+                    comment.getUserId(),
+                    comment.getStatus(),
+                    comment.getContent(),
+                    comment.getType(),
+                    comment.getApprovalCount(),
+                    comment.getCreateTime(),
+                    comment.getUpdateTime()
+            ));
+        });
+
+        return new CommentQueryAllResponseVo(
+                commentInfoList,
+                request.getPageNum(),
+                request.getPageSize(),
+                commentList.hasNext(),
+                commentList.hasPrevious(),
+                commentList.isFirst(),
+                commentList.isLast()
+        );
+
     }
 
 

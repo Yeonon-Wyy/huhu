@@ -24,6 +24,6 @@ public class AnswerBatchQueryRequestVo {
 
 
     public boolean validate() {
-        return CommonUtils.chekcId(questionId);
+        return CommonUtils.checkId(questionId);
     }
 }

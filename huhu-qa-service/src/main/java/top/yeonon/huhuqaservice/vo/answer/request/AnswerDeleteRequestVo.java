@@ -19,8 +19,7 @@ public class AnswerDeleteRequestVo {
     private Long userId;
 
     public boolean validate() {
-        return CommonUtils.chekcId(id)
-                && CommonUtils.chekcId(userId);
+        return CommonUtils.checkId(id, userId);
     }
 
 }

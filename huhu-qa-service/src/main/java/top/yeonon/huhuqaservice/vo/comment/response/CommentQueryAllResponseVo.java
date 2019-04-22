@@ -1,4 +1,4 @@
-package top.yeonon.huhuqaservice.vo.question.response;
+package top.yeonon.huhuqaservice.vo.comment.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,16 +8,16 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
  * @Author yeonon
- * @date 2019/4/20 0020 19:53
+ * @date 2019/4/22 0022 11:41
  **/
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionQueryAllResponseVo {
+public class CommentQueryAllResponseVo {
 
-    private List<QuestionInfo> questionInfoList;
+
+    private List<CommentInfo> commentInfoList;
 
     private Integer pageNum;
 
@@ -34,9 +34,13 @@ public class QuestionQueryAllResponseVo {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class QuestionInfo {
+    public static class CommentInfo {
         private Long id;
-        private String title;
+        private Long userId;
+        private Integer status;
+        private String content;
+        private Integer type;
+        private Long approvalCount;
         private Date createTime;
         private Date updateTime;
     }

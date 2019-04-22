@@ -25,8 +25,7 @@ public class AnswerUpdateRequestVo {
     private String content;
 
     public boolean validate() {
-        return CommonUtils.chekcId(id)
-                && CommonUtils.chekcId(userId);
+        return CommonUtils.checkId(id, userId);
     }
 
     public Answer update(Answer answer) {

@@ -17,6 +17,6 @@ public class FollowerQueryRequestVo {
     private Long id;
 
     public boolean validate() {
-        return CommonUtils.chekcId(id);
+        return CommonUtils.checkId(id);
     }
 }
