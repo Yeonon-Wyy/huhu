@@ -15,4 +15,8 @@ public class Const {
         Integer FORGET_PASSWORD_VALIDATE_CODE_COUNT = 6;
     }
 
+    public interface UserConst {
+        String AVATAR_DIR = "avatar/";
+    }
+
 }

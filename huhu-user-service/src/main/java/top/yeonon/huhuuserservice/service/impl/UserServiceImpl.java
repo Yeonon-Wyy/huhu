@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.client.HuhuMailClient;
@@ -19,6 +20,7 @@ import top.yeonon.huhuuserservice.constants.Const;
 import top.yeonon.huhuuserservice.constants.ErrMessage;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
+import top.yeonon.huhuuserservice.properties.HuhuFtpProperties;
 import top.yeonon.huhuuserservice.repository.UserRepository;
 import top.yeonon.huhuuserservice.service.IUserService;
 import top.yeonon.huhuuserservice.vo.request.*;
@@ -44,12 +46,15 @@ public class UserServiceImpl implements IUserService {
 
     private final HuhuMailClient huhuMailClient;
 
+    private final HuhuFtpProperties ftpProperties;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisTemplate<Object, Object> redisTemplate, HuhuMailClient huhuMailClient) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisTemplate<Object, Object> redisTemplate, HuhuMailClient huhuMailClient, HuhuFtpProperties ftpProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.redisTemplate = redisTemplate;
         this.huhuMailClient = huhuMailClient;
+        this.ftpProperties = ftpProperties;
     }
 
     @Override
@@ -258,5 +263,27 @@ public class UserServiceImpl implements IUserService {
 
         //从Redis里删除
         redisTemplate.delete(Const.RedisConst.FORGET_PASSWORD_VALIDATE_CODE_PREFIX + request.getUsername());
+    }
+
+    @Override
+    @Transactional
+    public UploadAvatarResponseVo uploadAvatar(UploadAvatarRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+        String avatarFileName = CommonUtils.uploadFile(
+                ftpProperties.getHost(),
+                ftpProperties.getPort(),
+                ftpProperties.getUsername(),
+                ftpProperties.getPassword(),
+                Const.UserConst.AVATAR_DIR,
+                request.getFile()
+        );
+
+        String filePath = ftpProperties.getServerAddr() + avatarFileName;
+
+
+        userRepository.updateAvatarById(filePath, request.getUserId());
+        return new UploadAvatarResponseVo(filePath);
     }
 }

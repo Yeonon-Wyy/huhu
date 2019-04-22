@@ -1,5 +1,6 @@
 package top.yeonon.huhuuserservice.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuuserservice.vo.request.*;
 import top.yeonon.huhuuserservice.vo.response.*;
@@ -79,5 +80,7 @@ public interface IUserService {
      * @throws HuhuException 可能抛出的异常
      */
     void updatePassword(UpdatePassRequestVo request) throws HuhuException;
+
+    UploadAvatarResponseVo uploadAvatar(UploadAvatarRequestVo requestVo) throws HuhuException;
 
 }

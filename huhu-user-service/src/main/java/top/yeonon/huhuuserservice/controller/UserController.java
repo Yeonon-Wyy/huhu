@@ -3,7 +3,9 @@ package top.yeonon.huhuuserservice.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.interceptor.annotation.CheckId;
 import top.yeonon.huhuuserservice.service.IUserService;
 import top.yeonon.huhuuserservice.vo.request.*;
@@ -72,6 +74,16 @@ public class UserController {
     @PutMapping("/password/update")
     public void updatePassword(@RequestBody UpdatePassRequestVo request) throws HuhuException {
         userService.updatePassword(request);
+    }
+
+    @PutMapping("/{id}/avatar/upload")
+    @CheckId
+    public UploadAvatarResponseVo uploadAvatar(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) throws HuhuException {
+        UploadAvatarRequestVo request = new UploadAvatarRequestVo(
+                id,
+                file
+        );
+        return userService.uploadAvatar(request);
     }
 
 

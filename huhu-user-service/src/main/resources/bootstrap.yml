@@ -20,6 +20,12 @@ huhu:
     authenticationPath: /users/**,/test/**
     jwt:
       signKey: huhu-project
+  ftp:
+    host: 192.168.170.143
+    port: 21
+    username: ftpuser
+    password: 124563
+    serverAddr: ftp://192.168.170.143/
 
 
 
