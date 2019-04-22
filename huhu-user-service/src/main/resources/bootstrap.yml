@@ -17,7 +17,7 @@ server:
 
 huhu:
   security:
-    authenticationPath: /users/**,/test/**
+    authenticationPath: /users/**
     jwt:
       signKey: huhu-project
   ftp:

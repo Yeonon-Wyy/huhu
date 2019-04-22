@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.interceptor.annotation.CheckId;
+import top.yeonon.huhuuserservice.service.IUserFollowService;
 import top.yeonon.huhuuserservice.service.IUserService;
 import top.yeonon.huhuuserservice.vo.request.*;
 import top.yeonon.huhuuserservice.vo.response.*;
@@ -22,9 +22,14 @@ public class UserController {
 
     private final IUserService userService;
 
+    private final IUserFollowService userFollowService;
+
+
     @Autowired
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService,
+                          IUserFollowService userFollowService) {
         this.userService = userService;
+        this.userFollowService = userFollowService;
     }
 
     @PostMapping
@@ -45,9 +50,7 @@ public class UserController {
     public UserUpdateResponseVo updateUser(@PathVariable("id") Long id,
                                            @RequestBody UserUpdateRequestVo request) throws HuhuException {
 
-
         request.setId(id);
-
         return userService.updateUserInfo(request);
     }
 
@@ -86,5 +89,41 @@ public class UserController {
         return userService.uploadAvatar(request);
     }
 
+
+    @PostMapping("{id}/follow/{followUserId}")
+    @CheckId
+    public UserFollowResponseVo follow(@PathVariable("id") Long id,
+                                       @PathVariable("followUserId") Long followUserId) throws HuhuException {
+
+        UserFollowRequestVo request = new UserFollowRequestVo(
+                id,
+                followUserId
+        );
+        return userFollowService.follow(request);
+    }
+
+    @DeleteMapping("{id}/follow/{unFollowId}")
+    @CheckId
+    public UserUnFollowResponseVo unFollow(@PathVariable("id") Long id,
+                                           @PathVariable("unFollowId") Long unFollowId) throws HuhuException {
+        UserUnFollowRequestVo request = new UserUnFollowRequestVo(
+                id,
+                unFollowId
+        );
+        return userFollowService.unFollow(request);
+    }
+
+    @GetMapping("{id}/follower")
+    public FollowerQueryResponseVo queryFollower(@PathVariable("id") Long id) throws HuhuException {
+        FollowerQueryRequestVo request = new FollowerQueryRequestVo(id);
+        return userFollowService.queryFollower(request);
+    }
+
+    @GetMapping("{id}/following")
+    public FollowingQueryResponseVo queryFollowing(@PathVariable("id") Long id) throws HuhuException {
+
+        FollowingQueryRequestVo request = new FollowingQueryRequestVo(id);
+        return userFollowService.queryFollowing(request);
+    }
 
 }

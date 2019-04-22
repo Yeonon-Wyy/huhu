@@ -9,6 +9,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.web.context.request.RequestContextListener;
 import top.yeonon.huhuuserservice.properties.HuhuSecurityProperties;
 
 
@@ -41,5 +42,11 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    //不知道是什么原因，如果不加这个Bean的话，Spring就无法创建
+    @Bean
+    public RequestContextListener requestContextListener() {
+        return new RequestContextListener();
     }
 }
