@@ -9,6 +9,7 @@ spring:
         server-addr: 47.94.156.44:8848
         file-extension: yml
         group: DEV_GROUP
+
 server:
   port: 5000
 

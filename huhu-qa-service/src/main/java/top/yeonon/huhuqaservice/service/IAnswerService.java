@@ -51,4 +51,17 @@ public interface IAnswerService {
      * @throws HuhuException 可能抛出的异常
      */
     AnswerBatchQueryByUserIdResponseVo queryAnswerByUserId(AnswerBatchQueryByUserIdRequestVo request) throws HuhuException;
+
+    /**
+     * 给回答点赞
+     * @param request 请求
+     * @throws HuhuException 可能抛出的异常
+     */
+    AnswerApprovalResponseVo approvalAnswer(AnswerApprovalRequestVo request) throws HuhuException;
+
+    /**
+     * 将redis里的数据写回到数据库里
+     */
+    void updateAnswerApprovalCount();
+
 }

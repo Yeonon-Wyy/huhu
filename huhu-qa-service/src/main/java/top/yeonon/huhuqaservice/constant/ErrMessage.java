@@ -26,4 +26,6 @@ public class ErrMessage {
     public static final String EXIST_SAME_QUESTION_COMMENT = "同一用户同一问题下已存在评论";
 
     public static final String EXIST_SAME_ANSWER_COMMENT = "同一用户同一回答下已存在评论";
+
+    public static final String ALREADY_APPROVAL_ANSWER = "该用户已经赞过该回答";
 }

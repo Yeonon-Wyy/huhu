@@ -81,6 +81,16 @@ public class AnswerController {
         return answerService.deleteAnswer(request);
     }
 
+    @PostMapping("/{id}/approval")
+    public AnswerApprovalResponseVo approvalAnswer(@PathVariable("id") Long id,
+                               Authentication authentication) throws HuhuException {
+        Long userId = QAUtils.parseUserIdFromAuthentication(authentication, signKey);
+        AnswerApprovalRequestVo request = new AnswerApprovalRequestVo(
+                id,
+                userId
+        );
 
+        return answerService.approvalAnswer(request);
+    }
 
 }
