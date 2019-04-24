@@ -17,8 +17,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>huhu-user-service</module>
         <module>huhu-common</module>
+        <module>huhu-user-service</module>
         <module>huhu-auth-server</module>
         <module>huhu-mail-service</module>
         <module>huhu-qa-service</module>
@@ -106,14 +106,5 @@
         </dependency>
 
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

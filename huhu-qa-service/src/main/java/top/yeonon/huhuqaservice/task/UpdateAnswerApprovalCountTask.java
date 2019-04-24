@@ -5,7 +5,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import top.yeonon.huhuqaservice.constant.Const;
@@ -25,18 +24,12 @@ public class UpdateAnswerApprovalCountTask {
 
     private final RedissonClient redissonClient;
 
-    private final AnswerRepository answerRepository;
-
-    private final RedisTemplate<String, String> redisTemplate;
-
     private final IAnswerService answerService;
 
-
     @Autowired
-    public UpdateAnswerApprovalCountTask(AnswerRepository answerRepository, RedissonClient redissonClient, RedisTemplate<String, String> redisTemplate, IAnswerService answerService) {
-        this.answerRepository = answerRepository;
+    public UpdateAnswerApprovalCountTask(RedissonClient redissonClient,
+                                         IAnswerService answerService) {
         this.redissonClient = redissonClient;
-        this.redisTemplate = redisTemplate;
         this.answerService = answerService;
     }
 

@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import top.yeonon.huhuqaservice.constant.AnswerStatus;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author yeonon
@@ -58,5 +60,11 @@ public class Answer {
         this.commentCount = 0L;
         this.createTime = new Date();
         this.updateTime = this.createTime;
+    }
+
+    public static void main(String[] args) {
+        List<Integer> nums = new ArrayList<>();
+        nums.add(null);
+        System.out.println(nums.size());
     }
 }
