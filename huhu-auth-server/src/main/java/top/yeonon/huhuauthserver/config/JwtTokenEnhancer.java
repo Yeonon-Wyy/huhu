@@ -35,9 +35,6 @@ public class JwtTokenEnhancer implements TokenEnhancer {
         }
         Map<String, Object> info = Maps.newHashMap();
         info.put("id", user.getId());
-        info.put("profile", user.getProfile());
-        info.put("avatar", user.getAvatar());
-
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
         return accessToken;
     }

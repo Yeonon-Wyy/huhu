@@ -19,6 +19,10 @@ spring:
         uri: lb://huhu-auth-service
         predicates:
           - Path=/huhu-auth-service/**
+      - id: huhu-mail-service
+        uri: lb://huhu-mail-service
+        predicates:
+          - Path=/huhu-mail-service/**
       discovery:
         locator:
           enabled: true

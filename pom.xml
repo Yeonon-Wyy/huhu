@@ -23,6 +23,7 @@
         <module>huhu-mail-service</module>
         <module>huhu-qa-service</module>
         <module>huhu-gateway</module>
+        <module>huhu-search-service</module>
     </modules>
 
     <properties>
@@ -45,8 +46,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-
         </dependencies>
     </dependencyManagement>
 
@@ -85,7 +84,6 @@
             <artifactId>commons-net</artifactId>
             <version>3.6</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>

@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import top.yeonon.huhuauthserver.constant.Const;
+import top.yeonon.huhuauthserver.constant.ErrMessage;
 import top.yeonon.huhuauthserver.constant.UserRole;
 import top.yeonon.huhuauthserver.entity.User;
 import top.yeonon.huhuauthserver.repository.UserRepository;
@@ -38,7 +39,7 @@ public class DomainUserDetailsService implements UserDetailsService {
                     AuthorityUtils.createAuthorityList(role)
             );
         } else {
-            throw new UsernameNotFoundException("用户["+username+"]不存在");
+            throw new UsernameNotFoundException(ErrMessage.USERNAME_OR_PASSWORD_ERROR);
         }
     }
 }

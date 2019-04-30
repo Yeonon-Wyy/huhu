@@ -56,6 +56,11 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("update Answer a set a.commentCount = a.commentCount + 1 where a.id = :id")
     void incrementCommentCountById(@Param("id") Long id);
 
+    /**
+     * 更新赞数
+     * @param approvalCount 赞数
+     * @param id 回答ID
+     */
     @Modifying
     @Query("update Answer a set a.approvalCount = :approvalCount where a.id = :id")
     void updateApprovalCount(@Param("approvalCount") Long approvalCount,
