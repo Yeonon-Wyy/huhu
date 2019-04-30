@@ -8,11 +8,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhusearchservice.constant.ErrMessage;
+import top.yeonon.huhusearchservice.entity.Answer;
 import top.yeonon.huhusearchservice.entity.Question;
+import top.yeonon.huhusearchservice.repository.AnswerRepository;
 import top.yeonon.huhusearchservice.repository.QuestionRepository;
 import top.yeonon.huhusearchservice.service.ISearchService;
-import top.yeonon.huhusearchservice.vo.SearchQuestionRequestVo;
-import top.yeonon.huhusearchservice.vo.SearchQuestionResponseVo;
+import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
+import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
+import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
 
 import java.util.List;
 import java.util.Random;
@@ -30,15 +33,19 @@ public class SearchServiceImpl implements ISearchService {
 
     private final QuestionRepository questionRepository;
 
+    private final AnswerRepository answerRepository;
+
 
     @Autowired
-    public SearchServiceImpl(QuestionRepository questionRepository) {
+    public SearchServiceImpl(QuestionRepository questionRepository,
+                             AnswerRepository answerRepository) {
         this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
     }
 
 
     @Override
-    public SearchQuestionResponseVo searchQuestion(SearchQuestionRequestVo request) throws HuhuException {
+    public SearchQuestionResponseVo searchQuestion(GeneralSearchRequestVo request) throws HuhuException {
         if (!request.validate()) {
             throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
         }
@@ -74,6 +81,43 @@ public class SearchServiceImpl implements ISearchService {
                 questions.isLast()
         );
 
+    }
+
+    @Override
+    public SearchAnswerResponseVo searchAnswer(GeneralSearchRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
+        Page<Answer> answers = answerRepository.findAllByContentLike(
+                request.getKeyword(),
+                PageRequest.of(request.getPageNum(), request.getPageSize(), sort)
+        );
+
+        List<SearchAnswerResponseVo.AnswerInfo> answerInfoList = Lists.newArrayList();
+        answers.forEach(answer -> {
+            answerInfoList.add(new SearchAnswerResponseVo.AnswerInfo(
+                    Long.parseLong(answer.getId()),
+                    answer.getUserId(),
+                    constructSummary(answer.getContent()),
+                    answer.getStatus(),
+                    answer.getApprovalCount(),
+                    answer.getCommentCount(),
+                    answer.getCreateTime(),
+                    answer.getUpdateTime()
+            ));
+        });
+
+        return new SearchAnswerResponseVo(
+                answerInfoList,
+                request.getPageNum(),
+                request.getPageSize(),
+                answers.hasNext(),
+                answers.hasPrevious(),
+                answers.isFirst(),
+                answers.isLast()
+        );
     }
 
 

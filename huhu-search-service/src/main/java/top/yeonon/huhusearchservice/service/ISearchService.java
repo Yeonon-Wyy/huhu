@@ -1,8 +1,9 @@
 package top.yeonon.huhusearchservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhusearchservice.vo.SearchQuestionRequestVo;
-import top.yeonon.huhusearchservice.vo.SearchQuestionResponseVo;
+import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
+import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
+import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
 
 /**
  * @Author yeonon
@@ -17,7 +18,16 @@ public interface ISearchService {
      * @return 响应对象，仅仅返回必要的信息
      * @throws HuhuException 可能抛出的异常
      */
-    SearchQuestionResponseVo searchQuestion(SearchQuestionRequestVo request)
+    SearchQuestionResponseVo searchQuestion(GeneralSearchRequestVo request)
         throws HuhuException;
 
+
+    /**
+     * 搜索回答
+     * @param request 请求对象，包含关键字
+     * @return 响应对象
+     * @throws HuhuException 可能抛出的异常
+     */
+    SearchAnswerResponseVo searchAnswer(GeneralSearchRequestVo request)
+        throws HuhuException;
 }

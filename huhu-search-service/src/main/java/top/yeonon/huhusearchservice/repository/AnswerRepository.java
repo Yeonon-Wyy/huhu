@@ -1,5 +1,7 @@
 package top.yeonon.huhusearchservice.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 import top.yeonon.huhusearchservice.entity.Answer;
@@ -10,4 +12,7 @@ import top.yeonon.huhusearchservice.entity.Answer;
  **/
 @Repository
 public interface AnswerRepository extends ElasticsearchRepository<Answer, String> {
+
+    Page<Answer> findAllByContentLike(String content, Pageable pageable);
 }
+

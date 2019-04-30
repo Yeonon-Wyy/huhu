@@ -1,4 +1,4 @@
-package top.yeonon.huhusearchservice.vo;
+package top.yeonon.huhusearchservice.vo.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,14 +9,14 @@ import java.util.List;
 
 /**
  * @Author yeonon
- * @date 2019/4/30 0030 17:43
+ * @date 2019/4/30 0030 18:34
  **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchQuestionResponseVo {
+public class SearchAnswerResponseVo {
 
-    private List<QuestionInfo> questionInfoList;
+    private List<AnswerInfo> answerInfoList;
 
     private Integer pageNum;
 
@@ -33,15 +33,13 @@ public class SearchQuestionResponseVo {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class QuestionInfo {
+    public static class AnswerInfo {
         private Long id;
-        private String title;
-        //摘要或者叫做总结
+        private Long userId;
         private String summary;
-        private Integer followerCount;
-        private Integer answerCount;
-        private Integer commentCount;
         private Integer status;
+        private Long approvalCount;
+        private Long commentCount;
         private Date createTime;
         private Date updateTime;
     }

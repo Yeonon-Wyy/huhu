@@ -1,4 +1,4 @@
-package top.yeonon.huhusearchservice.vo;
+package top.yeonon.huhusearchservice.vo.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,12 +7,12 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * @Author yeonon
- * @date 2019/4/30 0030 17:41
+ * @date 2019/4/30 0030 18:33
  **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchQuestionRequestVo {
+public class GeneralSearchRequestVo {
 
     private Integer pageNum;
 

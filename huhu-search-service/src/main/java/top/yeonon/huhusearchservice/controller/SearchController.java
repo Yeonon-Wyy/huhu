@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhusearchservice.service.ISearchService;
-import top.yeonon.huhusearchservice.vo.SearchQuestionRequestVo;
-import top.yeonon.huhusearchservice.vo.SearchQuestionResponseVo;
+import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
+import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
+import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
 
 /**
  * @Author yeonon
@@ -23,7 +24,13 @@ public class SearchController {
     }
 
     @GetMapping("question")
-    public SearchQuestionResponseVo searchQuestion(@RequestBody SearchQuestionRequestVo request) throws HuhuException {
+    public SearchQuestionResponseVo searchQuestion(@RequestBody GeneralSearchRequestVo request) throws HuhuException {
         return searchService.searchQuestion(request);
     }
+
+    @GetMapping("answer")
+    public SearchAnswerResponseVo searchAnswer(@RequestBody GeneralSearchRequestVo request) throws HuhuException {
+        return searchService.searchAnswer(request);
+    }
+
 }
