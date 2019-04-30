@@ -14,9 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Base64Utils;
-import top.yeonon.huhusearchservice.entity.Account;
 import top.yeonon.huhusearchservice.entity.Question;
-import top.yeonon.huhusearchservice.repository.AccountRepository;
 import top.yeonon.huhusearchservice.repository.QuestionRepository;
 import java.io.*;
 import java.util.Map;
@@ -29,21 +27,11 @@ public class HuhuSearchServiceApplicationTests {
     public void contextLoads() {
     }
 
-    @Autowired
-    private AccountRepository accountRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
 
-    @Test
-    public void testGetAccountById() {
-        Account account = accountRepository.findById("2").orElse(null);
-        if (account == null) {
-            System.out.println("occur error");
-        }
 
-        System.out.println(account);
-    }
 
     @Test
     public void testBinlogListener() {

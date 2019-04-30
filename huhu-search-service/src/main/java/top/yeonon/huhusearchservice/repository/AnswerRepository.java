@@ -2,12 +2,12 @@ package top.yeonon.huhusearchservice.repository;
 
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
-import top.yeonon.huhusearchservice.entity.Account;
+import top.yeonon.huhusearchservice.entity.Answer;
 
 /**
  * @Author yeonon
- * @date 2019/4/29 0029 19:06
+ * @date 2019/4/30 0030 16:57
  **/
 @Repository
-public interface AccountRepository extends ElasticsearchRepository<Account, String> {
+public interface AnswerRepository extends ElasticsearchRepository<Answer, String> {
 }

@@ -61,10 +61,4 @@ public class Answer {
         this.createTime = new Date();
         this.updateTime = this.createTime;
     }
-
-    public static void main(String[] args) {
-        List<Integer> nums = new ArrayList<>();
-        nums.add(null);
-        System.out.println(nums.size());
-    }
 }
