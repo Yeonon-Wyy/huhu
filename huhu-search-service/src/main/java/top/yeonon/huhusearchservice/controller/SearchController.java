@@ -15,12 +15,15 @@ import top.yeonon.huhusearchservice.vo.SearchQuestionResponseVo;
 @RequestMapping("search")
 public class SearchController {
 
+    private final ISearchService searchService;
+
     @Autowired
-    private ISearchService searchService;
+    public SearchController(ISearchService searchService) {
+        this.searchService = searchService;
+    }
 
     @GetMapping("question")
     public SearchQuestionResponseVo searchQuestion(@RequestBody SearchQuestionRequestVo request) throws HuhuException {
-
         return searchService.searchQuestion(request);
     }
 }

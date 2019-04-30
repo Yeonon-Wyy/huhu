@@ -41,22 +41,14 @@ public class AnswerController {
     //查询该questionId下的所有问题
     @GetMapping("/{questionId}")
     public AnswerBatchQueryResponseVo batchQueryAnswer(@RequestBody AnswerBatchQueryRequestVo request,
-                                                       @PathVariable("questionId") Long questionId,
-                                                       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
-                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
+                                                       @PathVariable("questionId") Long questionId) throws HuhuException {
         request.setQuestionId(questionId);
-        request.setPageNum(pageNum);
-        request.setPageSize(pageSize);
         return answerService.batchQueryAnswer(request);
     }
 
     //查询某个用户的所有回答
     @GetMapping
-    public AnswerBatchQueryByUserIdResponseVo batchQueryByUserId(@RequestBody AnswerBatchQueryByUserIdRequestVo request,
-                                                                 @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
-                                                                 @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
-        request.setPageNum(pageNum);
-        request.setPageSize(pageSize);
+    public AnswerBatchQueryByUserIdResponseVo batchQueryByUserId(@RequestBody AnswerBatchQueryByUserIdRequestVo request) throws HuhuException {
         return answerService.queryAnswerByUserId(request);
     }
 
