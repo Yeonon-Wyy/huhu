@@ -108,7 +108,4 @@ public class HuhuSearchServiceApplicationTests {
             e.printStackTrace();
         }
     }
-
-
-
 }

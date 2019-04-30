@@ -15,7 +15,4 @@ public class HuhuQaServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(HuhuQaServiceApplication.class, args);
     }
-
-
-
 }

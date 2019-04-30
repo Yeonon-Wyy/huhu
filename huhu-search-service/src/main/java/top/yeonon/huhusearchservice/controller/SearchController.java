@@ -7,6 +7,7 @@ import top.yeonon.huhusearchservice.service.ISearchService;
 import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
 import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
+import top.yeonon.huhusearchservice.vo.response.SearchUserResponseVo;
 
 /**
  * @Author yeonon
@@ -33,4 +34,8 @@ public class SearchController {
         return searchService.searchAnswer(request);
     }
 
+    @GetMapping("user")
+    public SearchUserResponseVo searchUser(@RequestBody GeneralSearchRequestVo request) throws HuhuException {
+        return searchService.searchUser(request);
+    }
 }

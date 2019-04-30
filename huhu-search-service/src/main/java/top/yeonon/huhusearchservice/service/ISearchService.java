@@ -4,6 +4,7 @@ import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
 import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
+import top.yeonon.huhusearchservice.vo.response.SearchUserResponseVo;
 
 /**
  * @Author yeonon
@@ -29,5 +30,14 @@ public interface ISearchService {
      * @throws HuhuException 可能抛出的异常
      */
     SearchAnswerResponseVo searchAnswer(GeneralSearchRequestVo request)
+        throws HuhuException;
+
+    /**
+     * 搜索用户
+     * @param request 请求对象，包含关键字
+     * @return 响应对象
+     * @throws HuhuException 可能抛出的异常
+     */
+    SearchUserResponseVo searchUser(GeneralSearchRequestVo request)
         throws HuhuException;
 }

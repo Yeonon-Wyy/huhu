@@ -10,12 +10,15 @@ import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhusearchservice.constant.ErrMessage;
 import top.yeonon.huhusearchservice.entity.Answer;
 import top.yeonon.huhusearchservice.entity.Question;
+import top.yeonon.huhusearchservice.entity.User;
 import top.yeonon.huhusearchservice.repository.AnswerRepository;
 import top.yeonon.huhusearchservice.repository.QuestionRepository;
+import top.yeonon.huhusearchservice.repository.UserRepository;
 import top.yeonon.huhusearchservice.service.ISearchService;
 import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
 import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
+import top.yeonon.huhusearchservice.vo.response.SearchUserResponseVo;
 
 import java.util.List;
 import java.util.Random;
@@ -35,12 +38,16 @@ public class SearchServiceImpl implements ISearchService {
 
     private final AnswerRepository answerRepository;
 
+    private final UserRepository userRepository;
+
 
     @Autowired
     public SearchServiceImpl(QuestionRepository questionRepository,
-                             AnswerRepository answerRepository) {
+                             AnswerRepository answerRepository,
+                             UserRepository userRepository) {
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -117,6 +124,46 @@ public class SearchServiceImpl implements ISearchService {
                 answers.hasPrevious(),
                 answers.isFirst(),
                 answers.isLast()
+        );
+    }
+
+    @Override
+    public SearchUserResponseVo searchUser(GeneralSearchRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+        Sort sort = new Sort(Sort.Direction.DESC, "followerCount");
+
+        Page<User> users = userRepository.findAllByUsernameOrProfile(
+                request.getKeyword(),
+                request.getKeyword(),
+                PageRequest.of(request.getPageNum(), request.getPageSize(), sort)
+        );
+
+        List<SearchUserResponseVo.UserInfo> userInfoList = Lists.newArrayList();
+        users.forEach(user -> {
+            userInfoList.add(new SearchUserResponseVo.UserInfo(
+                    Long.parseLong(user.getId()),
+                    user.getUsername(),
+                    user.getProfile(),
+                    user.getStatus(),
+                    user.getAvatar(),
+                    user.getSex(),
+                    user.getFollowerCount(),
+                    user.getFollowingCount(),
+                    user.getIndustry(),
+                    user.getDegree()
+            ));
+        });
+
+        return new SearchUserResponseVo(
+                userInfoList,
+                request.getPageNum(),
+                request.getPageSize(),
+                users.hasNext(),
+                users.hasPrevious(),
+                users.isFirst(),
+                users.isLast()
         );
     }
 
