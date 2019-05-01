@@ -31,7 +31,7 @@ public class HuhuSearchServiceApplicationTests {
     @Autowired
     private QuestionRepository questionRepository;
 
-
+    Map<Long, TableMapEventData> tablesById = Maps.newHashMap();
 
     @Test
     public void testBinlogListener() {
@@ -43,19 +43,27 @@ public class HuhuSearchServiceApplicationTests {
         );
 
         client.registerEventListener(event -> {
-            EventData data = event.getData();
-            if (data instanceof QueryEventData) {
-                System.out.println("query event: ");
-            } else if (data instanceof DeleteRowsEventData) {
-                System.out.println("delete event");
-            } else if (data instanceof UpdateRowsEventData) {
-                System.out.println("update event");
-                UpdateRowsEventData updateData = (UpdateRowsEventData) data;
-                processUpdate(updateData);
-            } else if (data instanceof WriteRowsEventData) {
-                System.out.println("write event");
+            EventType eventType = event.getHeader().getEventType();
+
+            switch (eventType) {
+                case TABLE_MAP:
+                    TableMapEventData tableMapEventData = event.getData();
+                    tablesById.put(tableMapEventData.getTableId(), tableMapEventData);
+                    break;
+                case EXT_WRITE_ROWS:
+                    WriteRowsEventData data = event.getData();
+                    System.out.println(data.toString());
+                    break;
+                case EXT_UPDATE_ROWS:
+                    System.out.println("update row");
+                    break;
+                    default:
+                        //ignore
             }
+
+
         });
+
 
         try {
             client.connect();
@@ -63,6 +71,8 @@ public class HuhuSearchServiceApplicationTests {
             e.printStackTrace();
         }
     }
+
+
 
 
     private static final String SQL_SCHEMA = "SELECT table_schema,table_name,column_name,ordinal_position " +
@@ -91,7 +101,6 @@ public class HuhuSearchServiceApplicationTests {
         });
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setBase64Variant(Base64Variants.PEM);
         try {
             String res = objectMapper.writeValueAsString(values);
 //            System.out.println(res);

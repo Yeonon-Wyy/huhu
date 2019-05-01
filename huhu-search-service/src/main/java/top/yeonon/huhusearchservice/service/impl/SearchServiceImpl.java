@@ -58,7 +58,7 @@ public class SearchServiceImpl implements ISearchService {
         }
         Sort sort = new Sort(Sort.Direction.DESC, "followerCount");
 
-        Page<Question> questions = questionRepository.findAllByTitleOrContentLike(
+        Page<Question> questions = questionRepository.findAllByTitleLikeOrContentLike(
                 request.getKeyword(),
                 request.getKeyword(),
                 PageRequest.of(request.getPageNum(), request.getPageSize(), sort)
@@ -134,7 +134,7 @@ public class SearchServiceImpl implements ISearchService {
         }
         Sort sort = new Sort(Sort.Direction.DESC, "followerCount");
 
-        Page<User> users = userRepository.findAllByUsernameOrProfile(
+        Page<User> users = userRepository.findAllByUsernameLikeOrProfileLike(
                 request.getKeyword(),
                 request.getKeyword(),
                 PageRequest.of(request.getPageNum(), request.getPageSize(), sort)

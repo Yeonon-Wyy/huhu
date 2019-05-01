@@ -17,5 +17,5 @@ import java.util.List;
 public interface QuestionRepository extends ElasticsearchRepository<Question, String> {
 
 
-    Page<Question> findAllByTitleOrContentLike(String keyword, String content, Pageable pageable);
+    Page<Question> findAllByTitleLikeOrContentLike(String keyword, String content, Pageable pageable);
 }

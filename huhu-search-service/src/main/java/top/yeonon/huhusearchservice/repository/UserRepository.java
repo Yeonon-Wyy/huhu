@@ -13,5 +13,5 @@ import top.yeonon.huhusearchservice.entity.User;
 @Repository
 public interface UserRepository extends ElasticsearchRepository<User, String> {
 
-    Page<User> findAllByUsernameOrProfile(String username, String profile, Pageable pageable);
+    Page<User> findAllByUsernameLikeOrProfileLike(String username, String profile, Pageable pageable);
 }
