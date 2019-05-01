@@ -3,22 +3,22 @@ package top.yeonon.huhusearchservice.listener;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
-import com.github.shyiko.mysql.binlog.event.Event;
-import com.github.shyiko.mysql.binlog.event.EventType;
-import com.github.shyiko.mysql.binlog.event.TableMapEventData;
-import com.github.shyiko.mysql.binlog.event.WriteRowsEventData;
+import com.github.shyiko.mysql.binlog.event.*;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhusearchservice.constant.ErrMessage;
 import top.yeonon.huhusearchservice.constant.MysqlConst;
+import top.yeonon.huhusearchservice.entity.Answer;
+import top.yeonon.huhusearchservice.entity.Question;
 import top.yeonon.huhusearchservice.entity.User;
 import top.yeonon.huhusearchservice.repository.AnswerRepository;
 import top.yeonon.huhusearchservice.repository.QuestionRepository;
@@ -65,6 +65,8 @@ public class BinlogListener {
     @Value("${spring.datasource.url}")
     private String url;
 
+    private final ObjectMapper objectMapper;
+
     @Autowired
     public BinlogListener(QuestionRepository questionRepository,
                           AnswerRepository answerRepository,
@@ -74,6 +76,9 @@ public class BinlogListener {
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
         this.jdbcTemplate = jdbcTemplate;
+
+        objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     private static Map<Integer, String> questionPosToName = Maps.newConcurrentMap();
@@ -94,18 +99,18 @@ public class BinlogListener {
 
         String host = getHostFromUrl(url);
         Integer port = getPortFromUrl(url);
-        BinaryLogClient client = new BinaryLogClient(
-                host,
-                port,
-                username,
-                password
-        );
-
-        client.registerEventListener(new DelegatingEventListener());
 
 
         executor.execute(() -> {
+            BinaryLogClient client = new BinaryLogClient(
+                    host,
+                    port,
+                    username,
+                    password
+            );
+            client.registerEventListener(new DelegatingEventListener());
             try {
+
                 client.connect();
                 log.info("listening mysql binlog....");
             } catch (IOException e) {
@@ -156,57 +161,219 @@ public class BinlogListener {
                     handleWriteRowEvent(event);
                     break;
                 case EXT_UPDATE_ROWS:
-                    System.out.println("update row");
+                    handleUpdateRowEvent(event);
                     break;
+                case EXT_DELETE_ROWS:
+                    handleDeleteRowEvent(event);
                 default:
                     //ignore
             }
         }
     }
 
+    /**
+     * 处理写事件
+     *
+     * @param event 事件
+     */
     private void handleWriteRowEvent(Event event) {
         WriteRowsEventData data = event.getData();
         String tableName = tablesById.get(data.getTableId()).getTable();
         switch (tableName) {
             case MysqlConst.QABase.QUESTION_TABLE:
-                syncQuestionToElasticsearch(data);
+                writeQuestionToElasticsearch(data);
                 break;
             case MysqlConst.QABase.ANSWER_TABLE:
-                syncAnswerToElasticsearch(data);
+                writeAnswerToElasticsearch(data);
             case MysqlConst.UserBase.USER_TABLE:
-                syncUserToElasticsearch(data);
+                writeUserToElasticsearch(data);
+            default:
+                //ignore
+        }
+    }
+
+
+    private void handleUpdateRowEvent(Event event) {
+        UpdateRowsEventData data = event.getData();
+        String tableName = tablesById.get(data.getTableId()).getTable();
+        switch (tableName) {
+            case MysqlConst.QABase.QUESTION_TABLE:
+                updateQuestionToElasticsearch(data);
+                break;
+            case MysqlConst.QABase.ANSWER_TABLE:
+                updateAnswerToElasticsearch(data);
+                break;
+            case MysqlConst.UserBase.USER_TABLE:
+                updateUserToElasticsearch(data);
+                break;
+            default:
+                //ignore
+        }
+    }
+
+    private void handleDeleteRowEvent(Event event) {
+        DeleteRowsEventData data = event.getData();
+        String tableName = tablesById.get(data.getTableId()).getTable();
+        switch (tableName) {
+            case MysqlConst.QABase.QUESTION_TABLE:
+                deleteDataById(data, questionRepository, questionPosToName);
+                break;
+            case MysqlConst.QABase.ANSWER_TABLE:
+                deleteDataById(data, answerRepository, answerPosToName);
+                break;
+            case MysqlConst.UserBase.USER_TABLE:
+                deleteDataById(data, userRepository, userPosToName);
+                break;
                 default:
                     //ignore
         }
     }
 
-    private void syncUserToElasticsearch(WriteRowsEventData data) {
-        Map<String, Object> values = Maps.newHashMap();
-        data.getRows().forEach(columns -> {
-            for (int i = 0; i < columns.length; i++) {
-                values.put(userPosToName.get(i), columns[i]);
-            }
-        });
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    /***
+     * 以下几个方法是处理写事件不同的表数据
+     *
+     * */
+
+    private void writeUserToElasticsearch(WriteRowsEventData data) {
+        Map<String, Object> values = Maps.newHashMap();
+        data.getRows().forEach(row -> {
+            for (int i = 0; i < row.length; i++) {
+                values.put(userPosToName.get(i), row[i]);
+            }
+            saveUser(values);
+            values.clear();
+            log.info("sync user data to elasticsearch");
+
+        });
+    }
+
+    private void writeAnswerToElasticsearch(WriteRowsEventData data) {
+        Map<String, Object> values = Maps.newHashMap();
+        data.getRows().forEach(row -> {
+            for (int i = 0; i < row.length; i++) {
+                values.put(answerPosToName.get(i), row[i]);
+            }
+            saveAnswer(values);
+            values.clear();
+            log.info("sync answer data to elasticsearch");
+
+        });
+    }
+
+    private void writeQuestionToElasticsearch(WriteRowsEventData data) {
+        Map<String, Object> values = Maps.newHashMap();
+        data.getRows().forEach(row -> {
+            for (int i = 0; i < row.length; i++) {
+                values.put(questionPosToName.get(i), row[i]);
+            }
+            saveQuestion(values);
+            values.clear();
+            log.info("sync question data to elasticsearch");
+        });
+    }
+
+    /***
+     * 以下几个方法是处理更新事件不同的表数据
+     *
+     * */
+
+    private void updateUserToElasticsearch(UpdateRowsEventData data) {
+        Map<String, Object> values = Maps.newHashMap();
+        data.getRows().forEach(entry -> {
+            for (int i = 0; i < entry.getValue().length; i++) {
+                values.put(userPosToName.get(i), entry.getValue()[i]);
+            }
+            saveUser(values);
+            values.clear();
+            log.info("sync user data to elasticsearch");
+
+        });
+    }
+
+    private void updateQuestionToElasticsearch(UpdateRowsEventData data) {
+        Map<String, Object> values = Maps.newHashMap();
+        data.getRows().forEach(entry -> {
+            for (int i = 0; i < entry.getValue().length; i++) {
+                values.put(questionPosToName.get(i), entry.getValue()[i]);
+            }
+            saveQuestion(values);
+            values.clear();
+            log.info("sync question data to elasticsearch");
+        });
+    }
+
+    private void updateAnswerToElasticsearch(UpdateRowsEventData data) {
+        Map<String, Object> values = Maps.newHashMap();
+        data.getRows().forEach(entry -> {
+            for (int i = 0; i < entry.getValue().length; i++) {
+                values.put(answerPosToName.get(i), entry.getValue()[i]);
+            }
+            saveAnswer(values);
+            values.clear();
+            log.info("sync answer data to elasticsearch");
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void deleteDataById(DeleteRowsEventData data, ElasticsearchRepository repository, Map<Integer, String> posToName) {
+        data.getRows().forEach(row -> {
+            String id = "";
+            for (int i = 0; i < row.length; i++) {
+                if (posToName.get(i).equals("id")) {
+                    id = String.valueOf(row[i]);
+                }
+            }
+            repository.deleteById(id);
+        });
+    }
+
+
+    /**
+     * 将用户数据保存到es
+     * @param values 用户数据
+     */
+    private void saveUser(Map<String, Object> values) {
         try {
             String jsonStr = objectMapper.writeValueAsString(values);
             User user = objectMapper.readValue(jsonStr, User.class);
             userRepository.save(user);
-            log.info("sync user data to elasticsearch");
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-
     }
 
-    private void syncAnswerToElasticsearch(WriteRowsEventData data) {
-
+    /**
+     * 将回答数据保存到ES
+     * @param values 回答数据
+     */
+    private void saveAnswer(Map<String, Object> values) {
+        try {
+            String jsonStr = objectMapper.writeValueAsString(values);
+            Answer answer = objectMapper.readValue(jsonStr, Answer.class);
+            //解码，重新设置content
+            byte[] contentBytes = Base64Utils.decodeFromString(answer.getContent());
+            answer.setContent(new String(contentBytes));
+            answerRepository.save(answer);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
-    private void syncQuestionToElasticsearch(WriteRowsEventData data) {
-
+    /**
+     * 将问题数据保存到ES
+     * @param values 问题数据
+     */
+    private void saveQuestion(Map<String, Object> values) {
+        try {
+            String jsonStr = objectMapper.writeValueAsString(values);
+            Question question = objectMapper.readValue(jsonStr, Question.class);
+            //解码，重新设置content
+            byte[] contentBytes = Base64Utils.decodeFromString(question.getContent());
+            question.setContent(new String(contentBytes));
+            questionRepository.save(question);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
-
 }

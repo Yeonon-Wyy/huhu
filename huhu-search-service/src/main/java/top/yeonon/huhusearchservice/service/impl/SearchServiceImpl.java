@@ -178,7 +178,7 @@ public class SearchServiceImpl implements ISearchService {
         if (content.length() <= SUMMARY_MAX_COUNT) {
             return content;
         }
-        int n = random.nextInt((SUMMARY_MAX_COUNT - SUMMARY_MIN_COUNT) + 1) - SUMMARY_MIN_COUNT;
+        int n = random.nextInt((SUMMARY_MAX_COUNT - SUMMARY_MIN_COUNT) + 1) + SUMMARY_MIN_COUNT;
         return content.substring(0, n);
     }
 }
