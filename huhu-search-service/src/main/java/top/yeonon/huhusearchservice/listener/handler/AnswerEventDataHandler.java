@@ -68,9 +68,8 @@ public class AnswerEventDataHandler implements EventDataHandler {
             }
             saveAnswer(values);
             values.clear();
-            log.info("sync answer data to elasticsearch");
-
         });
+        log.info("sync answer data to elasticsearch");
     }
 
     @Override
@@ -82,20 +81,21 @@ public class AnswerEventDataHandler implements EventDataHandler {
             }
             saveAnswer(values);
             values.clear();
-            log.info("sync answer data to elasticsearch");
         });
+        log.info("sync answer data to elasticsearch");
     }
 
     @Override
     public void handleDeleteRowData(DeleteRowsEventData data) {
         data.getRows().forEach(row -> {
             for (int i = 0; i < row.length; i++) {
-                if (answerPosToName.get(i).equals("id")) {
+                if ("id".equals(answerPosToName.get(i))) {
                     answerRepository.deleteById(String.valueOf(row[i]));
                     return;
                 }
             }
         });
+        log.info("delete answer data from elasticsearch");
     }
 
     private void saveAnswer(Map<String, Object> values) {

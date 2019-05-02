@@ -65,9 +65,8 @@ public class UserEventDataHandler implements EventDataHandler {
             }
             saveUser(values);
             values.clear();
-            log.info("sync user data to elasticsearch");
-
         });
+        log.info("sync user data to elasticsearch");
     }
 
     @Override
@@ -79,22 +78,23 @@ public class UserEventDataHandler implements EventDataHandler {
             }
             saveUser(values);
             values.clear();
-            log.info("sync user data to elasticsearch");
-
         });
+        log.info("sync user data to elasticsearch");
     }
 
     @Override
     public void handleDeleteRowData(DeleteRowsEventData data) {
         data.getRows().forEach(row -> {
             for (int i = 0; i < row.length; i++) {
-                if (userPosToName.get(i).equals("id")) {
+                if ("id".equals(userPosToName.get(i))) {
                     String id = String.valueOf(row[i]);
                     userRepository.deleteById(id);
                     return;
                 }
             }
         });
+        log.info("delete user data from elasticsearch");
+
     }
 
     /**

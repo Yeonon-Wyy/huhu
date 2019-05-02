@@ -68,8 +68,8 @@ public class QuestionEventDataHandler implements EventDataHandler {
             }
             saveQuestion(values);
             values.clear();
-            log.info("sync question data to elasticsearch");
         });
+        log.info("sync question data to elasticsearch");
     }
 
     @Override
@@ -81,8 +81,9 @@ public class QuestionEventDataHandler implements EventDataHandler {
             }
             saveQuestion(values);
             values.clear();
-            log.info("sync question data to elasticsearch");
         });
+        log.info("sync question data to elasticsearch");
+
     }
 
     @Override
@@ -90,13 +91,15 @@ public class QuestionEventDataHandler implements EventDataHandler {
         data.getRows().forEach(row -> {
             String id = "";
             for (int i = 0; i < row.length; i++) {
-                if (questionPosToName.get(i).equals("id")) {
+                if ("id".equals(questionPosToName.get(i))) {
                     id = String.valueOf(row[i]);
                     questionRepository.deleteById(id);
                     return;
                 }
             }
         });
+        log.info("delete question data from elasticsearch");
+
     }
 
     /**

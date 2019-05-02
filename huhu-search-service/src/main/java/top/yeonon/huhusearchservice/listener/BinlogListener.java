@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,11 +72,11 @@ public class BinlogListener {
 
     private static ExecutorService executor = Executors.newFixedThreadPool(4);
 
+
     @PostConstruct
     public void init() throws HuhuException {
         String host = SearchUtils.getHostFromJdbcUrl(url);
         Integer port = SearchUtils.getPortFromJdbcUrl(url);
-
 
         //将其扔进线程池，避免阻塞主线程
         executor.execute(() -> {
@@ -152,8 +153,10 @@ public class BinlogListener {
                 break;
             case MysqlConst.QABase.ANSWER_TABLE:
                 answerEventDataHandler.handleWriteRowData(data);
+                break;
             case MysqlConst.UserBase.USER_TABLE:
                 userEventDataHandler.handleWriteRowData(data);
+                break;
             default:
                 //ignore
         }
