@@ -67,7 +67,7 @@ public class BinlogListener {
         this.redissonClient = redissonClient;
     }
 
-    private static Map<Long, TableMapEventData> tablesById = Maps.newConcurrentMap();
+    private static Map<Long, String> tableNameById = Maps.newConcurrentMap();
 
     private static ExecutorService executor = Executors.newFixedThreadPool(4);
 
@@ -110,7 +110,7 @@ public class BinlogListener {
                     switch (eventType) {
                         case TABLE_MAP:
                             TableMapEventData tableMapEventData = event.getData();
-                            tablesById.put(tableMapEventData.getTableId(), tableMapEventData);
+                            tableNameById.putIfAbsent(tableMapEventData.getTableId(), tableMapEventData.getTable());
                             break;
                         case EXT_WRITE_ROWS:
                             handleWriteRowEvent(event);
@@ -145,7 +145,7 @@ public class BinlogListener {
      */
     private void handleWriteRowEvent(Event event) {
         WriteRowsEventData data = event.getData();
-        String tableName = tablesById.get(data.getTableId()).getTable();
+        String tableName = tableNameById.get(data.getTableId());
         switch (tableName) {
             case MysqlConst.QABase.QUESTION_TABLE:
                 questionEventDataHandler.handleWriteRowData(data);
@@ -167,7 +167,7 @@ public class BinlogListener {
      */
     private void handleUpdateRowEvent(Event event) {
         UpdateRowsEventData data = event.getData();
-        String tableName = tablesById.get(data.getTableId()).getTable();
+        String tableName = tableNameById.get(data.getTableId());
         switch (tableName) {
             case MysqlConst.QABase.QUESTION_TABLE:
                 questionEventDataHandler.handleUpdateRowData(data);
@@ -189,7 +189,7 @@ public class BinlogListener {
      */
     private void handleDeleteRowEvent(Event event) {
         DeleteRowsEventData data = event.getData();
-        String tableName = tablesById.get(data.getTableId()).getTable();
+        String tableName = tableNameById.get(data.getTableId());
         switch (tableName) {
             case MysqlConst.QABase.QUESTION_TABLE:
                 questionEventDataHandler.handleDeleteRowData(data);
