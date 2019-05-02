@@ -19,4 +19,8 @@ public class MysqlConst {
 
         public static final String USER_TABLE = "user";
     }
+
+    public static final String SCHEMA_INFO_SQL = "SELECT table_schema,table_name,column_name,ordinal_position " +
+            "FROM information_schema.`COLUMNS` " +
+            "WHERE table_schema = ? and table_name = ?";
 }
