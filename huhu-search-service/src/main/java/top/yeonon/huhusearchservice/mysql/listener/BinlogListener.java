@@ -1,4 +1,4 @@
-package top.yeonon.huhusearchservice.listener;
+package top.yeonon.huhusearchservice.mysql.listener;
 
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhusearchservice.constant.MysqlConst;
 import top.yeonon.huhusearchservice.constant.RedisConst;
-import top.yeonon.huhusearchservice.listener.handler.EventDataHandler;
+import top.yeonon.huhusearchservice.mysql.listener.handler.EventDataHandler;
 import top.yeonon.huhusearchservice.util.SearchUtils;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**

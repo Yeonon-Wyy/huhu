@@ -1,4 +1,4 @@
-package top.yeonon.huhusearchservice.listener.handler;
+package top.yeonon.huhusearchservice.mysql.listener.handler;
 
 import com.github.shyiko.mysql.binlog.event.DeleteRowsEventData;
 import com.github.shyiko.mysql.binlog.event.UpdateRowsEventData;

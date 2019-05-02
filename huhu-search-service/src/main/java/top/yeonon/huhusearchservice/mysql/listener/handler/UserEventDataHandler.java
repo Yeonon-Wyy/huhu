@@ -1,4 +1,4 @@
-package top.yeonon.huhusearchservice.listener.handler;
+package top.yeonon.huhusearchservice.mysql.listener.handler;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,10 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Base64Utils;
 import top.yeonon.huhusearchservice.constant.MysqlConst;
-import top.yeonon.huhusearchservice.entity.Answer;
-import top.yeonon.huhusearchservice.repository.AnswerRepository;
+import top.yeonon.huhusearchservice.entity.User;
+import top.yeonon.huhusearchservice.repository.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -23,39 +22,37 @@ import java.util.Map;
 
 /**
  * @Author yeonon
- * @date 2019/5/2 0002 11:39
+ * @date 2019/5/2 0002 11:46
  **/
 @Component
 @Slf4j
-@Qualifier("answerEventDataHandler")
-public class AnswerEventDataHandler implements EventDataHandler {
+@Qualifier("userEventDataHandler")
+public class UserEventDataHandler implements EventDataHandler {
 
-    private final AnswerRepository answerRepository;
+    private final UserRepository userRepository;
 
     private final JdbcTemplate jdbcTemplate;
 
     private final ObjectMapper objectMapper;
 
-    private final Map<Integer, String> answerPosToName;
-
-
-    @Autowired
-    public AnswerEventDataHandler(AnswerRepository answerRepository,
-                                  JdbcTemplate jdbcTemplate) {
-        this.answerRepository = answerRepository;
-        this.jdbcTemplate = jdbcTemplate;
-        objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        answerPosToName = Maps.newConcurrentMap();
-    }
+    private final Map<Integer, String> userPosToName;
 
     @PostConstruct
     public void init() {
-        jdbcTemplate.query(MysqlConst.SCHEMA_INFO_SQL, new Object[]{MysqlConst.QABase.DATABASE, MysqlConst.QABase.ANSWER_TABLE}, rs -> {
+        jdbcTemplate.query(MysqlConst.SCHEMA_INFO_SQL, new Object[]{MysqlConst.UserBase.DATABASE, MysqlConst.UserBase.USER_TABLE}, rs -> {
             int pos = rs.getInt("ordinal_position");
             String columnName = rs.getString("column_name");
-            answerPosToName.put(pos - 1, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, columnName));
+            userPosToName.put(pos - 1, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, columnName));
         });
+    }
+
+    @Autowired
+    public UserEventDataHandler(UserRepository userRepository, JdbcTemplate jdbcTemplate) {
+        this.userRepository = userRepository;
+        this.jdbcTemplate = jdbcTemplate;
+        objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        userPosToName = Maps.newConcurrentMap();
     }
 
 
@@ -64,12 +61,12 @@ public class AnswerEventDataHandler implements EventDataHandler {
         Map<String, Object> values = Maps.newHashMap();
         data.getRows().forEach(row -> {
             for (int i = 0; i < row.length; i++) {
-                values.put(answerPosToName.get(i), row[i]);
+                values.put(userPosToName.get(i), row[i]);
             }
-            saveAnswer(values);
+            saveUser(values);
             values.clear();
         });
-        log.info("sync answer data to elasticsearch");
+        log.info("sync user data to elasticsearch");
     }
 
     @Override
@@ -77,35 +74,38 @@ public class AnswerEventDataHandler implements EventDataHandler {
         Map<String, Object> values = Maps.newHashMap();
         data.getRows().forEach(entry -> {
             for (int i = 0; i < entry.getValue().length; i++) {
-                values.put(answerPosToName.get(i), entry.getValue()[i]);
+                values.put(userPosToName.get(i), entry.getValue()[i]);
             }
-            saveAnswer(values);
+            saveUser(values);
             values.clear();
         });
-        log.info("sync answer data to elasticsearch");
+        log.info("sync user data to elasticsearch");
     }
 
     @Override
     public void handleDeleteRowData(DeleteRowsEventData data) {
         data.getRows().forEach(row -> {
             for (int i = 0; i < row.length; i++) {
-                if ("id".equals(answerPosToName.get(i))) {
-                    answerRepository.deleteById(String.valueOf(row[i]));
+                if ("id".equals(userPosToName.get(i))) {
+                    String id = String.valueOf(row[i]);
+                    userRepository.deleteById(id);
                     return;
                 }
             }
         });
-        log.info("delete answer data from elasticsearch");
+        log.info("delete user data from elasticsearch");
+
     }
 
-    private void saveAnswer(Map<String, Object> values) {
+    /**
+     * 将用户数据保存到es
+     * @param values 用户数据
+     */
+    private void saveUser(Map<String, Object> values) {
         try {
             String jsonStr = objectMapper.writeValueAsString(values);
-            Answer answer = objectMapper.readValue(jsonStr, Answer.class);
-            //解码，重新设置content
-            byte[] contentBytes = Base64Utils.decodeFromString(answer.getContent());
-            answer.setContent(new String(contentBytes));
-            answerRepository.save(answer);
+            User user = objectMapper.readValue(jsonStr, User.class);
+            userRepository.save(user);
         } catch (IOException e) {
             log.error(e.getMessage());
         }

@@ -1,4 +1,4 @@
-package top.yeonon.huhusearchservice.listener.handler;
+package top.yeonon.huhusearchservice.mysql.listener.handler;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
