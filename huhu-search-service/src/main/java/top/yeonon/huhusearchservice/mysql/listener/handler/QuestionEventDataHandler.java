@@ -8,17 +8,25 @@ import com.github.shyiko.mysql.binlog.event.WriteRowsEventData;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
+import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
+import top.yeonon.huhusearchservice.constant.ErrMessage;
 import top.yeonon.huhusearchservice.constant.MysqlConst;
 import top.yeonon.huhusearchservice.entity.Question;
+import top.yeonon.huhusearchservice.mysql.listener.vo.Suggest;
 import top.yeonon.huhusearchservice.repository.QuestionRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -39,8 +47,10 @@ public class QuestionEventDataHandler implements EventDataHandler {
 
     private final ObjectMapper objectMapper;
 
+
     @Autowired
-    public QuestionEventDataHandler(QuestionRepository questionRepository, JdbcTemplate jdbcTemplate) {
+    public QuestionEventDataHandler(QuestionRepository questionRepository,
+                                    JdbcTemplate jdbcTemplate) {
         this.questionRepository = questionRepository;
         this.jdbcTemplate = jdbcTemplate;
         objectMapper = new ObjectMapper();
@@ -55,33 +65,33 @@ public class QuestionEventDataHandler implements EventDataHandler {
             String columnName = rs.getString("column_name");
             questionPosToName.put(pos - 1, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, columnName));
         });
-
     }
 
 
     @Override
-    public void handleWriteRowData(WriteRowsEventData data) {
+    public void handleWriteRowData(WriteRowsEventData data) throws HuhuException {
         Map<String, Object> values = Maps.newHashMap();
-        data.getRows().forEach(row -> {
+
+        for (Serializable[] row : data.getRows()) {
             for (int i = 0; i < row.length; i++) {
                 values.put(questionPosToName.get(i), row[i]);
             }
             saveQuestion(values);
             values.clear();
-        });
+        }
         log.info("sync question data to elasticsearch");
     }
 
     @Override
-    public void handleUpdateRowData(UpdateRowsEventData data) {
+    public void handleUpdateRowData(UpdateRowsEventData data) throws HuhuException {
         Map<String, Object> values = Maps.newHashMap();
-        data.getRows().forEach(entry -> {
+        for (Map.Entry<Serializable[], Serializable[]> entry : data.getRows()) {
             for (int i = 0; i < entry.getValue().length; i++) {
                 values.put(questionPosToName.get(i), entry.getValue()[i]);
             }
             saveQuestion(values);
             values.clear();
-        });
+        }
         log.info("sync question data to elasticsearch");
 
     }
@@ -106,8 +116,9 @@ public class QuestionEventDataHandler implements EventDataHandler {
      * 将问题数据保存到ES
      * @param values 问题数据
      */
-    private void saveQuestion(Map<String, Object> values) {
-
+    private void saveQuestion(Map<String, Object> values) throws HuhuException {
+        //添加suggest
+        addSuggest(values);
         try {
             String jsonStr = objectMapper.writeValueAsString(values);
             Question question = objectMapper.readValue(jsonStr, Question.class);
@@ -118,5 +129,20 @@ public class QuestionEventDataHandler implements EventDataHandler {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+
+
+    private void addSuggest(Map<String, Object> values) throws HuhuException {
+        String title = (String) values.get(ElasticSearchConst.QA.SUGGEST_INPUT_KEY);
+        Integer followerCount = (Integer) values.get(ElasticSearchConst.QA.SUGGEST_WEIGHT_KEY);
+        if (title == null || followerCount == null) {
+            throw new HuhuException(ErrMessage.DATA_PARSE_ERROR);
+        }
+        Suggest suggest =  new Suggest(
+                title,
+                followerCount
+        );
+        values.put(ElasticSearchConst.SUGGEST_PROPERTIES_KEY, suggest);
     }
 }

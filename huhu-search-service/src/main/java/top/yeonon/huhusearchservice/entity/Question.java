@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
+import top.yeonon.huhusearchservice.mysql.listener.vo.Suggest;
 
 import java.util.Date;
 
@@ -15,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Document(indexName = "huhu-qa", type = "question")
+@Document(indexName = ElasticSearchConst.QA.INDEX_NAME, type = ElasticSearchConst.QA.QUESTION_TYPE_NAME)
 public class Question {
 
     @Id
@@ -38,5 +40,7 @@ public class Question {
     private Date createTime;
 
     private Date updateTime;
+
+    private Suggest suggest;
 
 }

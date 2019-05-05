@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
 
 import java.util.Date;
 
@@ -16,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Document(indexName = "huhu-qa", type = "answer")
+@Document(indexName = ElasticSearchConst.QA.INDEX_NAME, type = ElasticSearchConst.QA.ANSWER_TYPE_NAME)
 public class Answer {
 
     @Id

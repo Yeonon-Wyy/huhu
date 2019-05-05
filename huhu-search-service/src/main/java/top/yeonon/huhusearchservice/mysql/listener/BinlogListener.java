@@ -29,12 +29,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/5/1 0001 11:45
  **/
 @Component
-@DependsOn(value = {
-        "questionRepository",
-        "answerRepository",
-        "userRepository",
-        "jdbcTemplate"
-})
 @Slf4j
 public class BinlogListener {
 
@@ -125,7 +119,7 @@ public class BinlogListener {
                     }
                 }
 
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | HuhuException e) {
                 log.error(e.getMessage());
             } finally {
                 //如果成功获取锁了，最后释放锁
@@ -143,7 +137,7 @@ public class BinlogListener {
      *
      * @param event 事件
      */
-    private void handleWriteRowEvent(Event event) {
+    private void handleWriteRowEvent(Event event) throws HuhuException {
         WriteRowsEventData data = event.getData();
         String tableName = tableNameById.get(data.getTableId());
         switch (tableName) {
@@ -165,7 +159,7 @@ public class BinlogListener {
      * 处理更新事件
      * @param event 更新事件
      */
-    private void handleUpdateRowEvent(Event event) {
+    private void handleUpdateRowEvent(Event event) throws HuhuException {
         UpdateRowsEventData data = event.getData();
         String tableName = tableNameById.get(data.getTableId());
         switch (tableName) {
@@ -187,7 +181,7 @@ public class BinlogListener {
      * 处理删除事件
      * @param event 事件
      */
-    private void handleDeleteRowEvent(Event event) {
+    private void handleDeleteRowEvent(Event event) throws HuhuException {
         DeleteRowsEventData data = event.getData();
         String tableName = tableNameById.get(data.getTableId());
         switch (tableName) {

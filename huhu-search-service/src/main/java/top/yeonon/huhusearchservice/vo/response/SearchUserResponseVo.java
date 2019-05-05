@@ -29,7 +29,7 @@ public class SearchUserResponseVo {
 
     private boolean isLast;
 
-
+    
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

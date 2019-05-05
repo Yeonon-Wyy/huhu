@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
+import top.yeonon.huhusearchservice.mysql.listener.vo.Suggest;
 
 /**
  * @Author yeonon
@@ -13,7 +15,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Document(indexName = "huhu-user", type = "user")
+@Document(indexName = ElasticSearchConst.User.INDEX_NAME, type = ElasticSearchConst.User.USER_TYPE_NAME)
 public class User {
 
     @Id
@@ -44,4 +46,6 @@ public class User {
     private String industry;
 
     private Integer degree;
+
+    private Suggest suggest;
 }

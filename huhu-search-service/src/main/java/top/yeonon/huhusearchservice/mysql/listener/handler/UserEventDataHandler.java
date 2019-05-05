@@ -10,14 +10,20 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
+import top.yeonon.huhusearchservice.constant.ErrMessage;
 import top.yeonon.huhusearchservice.constant.MysqlConst;
 import top.yeonon.huhusearchservice.entity.User;
+import top.yeonon.huhusearchservice.mysql.listener.vo.Suggest;
 import top.yeonon.huhusearchservice.repository.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -37,6 +43,7 @@ public class UserEventDataHandler implements EventDataHandler {
 
     private final Map<Integer, String> userPosToName;
 
+
     @PostConstruct
     public void init() {
         jdbcTemplate.query(MysqlConst.SCHEMA_INFO_SQL, new Object[]{MysqlConst.UserBase.DATABASE, MysqlConst.UserBase.USER_TABLE}, rs -> {
@@ -47,7 +54,8 @@ public class UserEventDataHandler implements EventDataHandler {
     }
 
     @Autowired
-    public UserEventDataHandler(UserRepository userRepository, JdbcTemplate jdbcTemplate) {
+    public UserEventDataHandler(UserRepository userRepository,
+                                JdbcTemplate jdbcTemplate) {
         this.userRepository = userRepository;
         this.jdbcTemplate = jdbcTemplate;
         objectMapper = new ObjectMapper();
@@ -57,28 +65,29 @@ public class UserEventDataHandler implements EventDataHandler {
 
 
     @Override
-    public void handleWriteRowData(WriteRowsEventData data) {
+    public void handleWriteRowData(WriteRowsEventData data) throws HuhuException {
         Map<String, Object> values = Maps.newHashMap();
-        data.getRows().forEach(row -> {
+        for (Serializable[] row : data.getRows()) {
             for (int i = 0; i < row.length; i++) {
                 values.put(userPosToName.get(i), row[i]);
             }
             saveUser(values);
             values.clear();
-        });
+        }
+
         log.info("sync user data to elasticsearch");
     }
 
     @Override
-    public void handleUpdateRowData(UpdateRowsEventData data) {
+    public void handleUpdateRowData(UpdateRowsEventData data) throws HuhuException {
         Map<String, Object> values = Maps.newHashMap();
-        data.getRows().forEach(entry -> {
+        for (Map.Entry<Serializable[], Serializable[]> entry : data.getRows()) {
             for (int i = 0; i < entry.getValue().length; i++) {
                 values.put(userPosToName.get(i), entry.getValue()[i]);
             }
             saveUser(values);
             values.clear();
-        });
+        }
         log.info("sync user data to elasticsearch");
     }
 
@@ -94,20 +103,37 @@ public class UserEventDataHandler implements EventDataHandler {
             }
         });
         log.info("delete user data from elasticsearch");
-
     }
 
     /**
      * 将用户数据保存到es
      * @param values 用户数据
      */
-    private void saveUser(Map<String, Object> values) {
+    private void saveUser(Map<String, Object> values) throws HuhuException {
+        //添加suggest
+        addSuggest(values);
         try {
             String jsonStr = objectMapper.writeValueAsString(values);
             User user = objectMapper.readValue(jsonStr, User.class);
             userRepository.save(user);
+
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
+
+
+    private void addSuggest(Map<String, Object> values) throws HuhuException {
+        String username = (String) values.get(ElasticSearchConst.User.SUGGEST_INPUT_KEY);
+        Integer followerCount = (Integer) values.get(ElasticSearchConst.User.SUGGEST_WEIGHT_KEY);
+        if (username == null || followerCount == null) {
+            throw new HuhuException(ErrMessage.DATA_PARSE_ERROR);
+        }
+        Suggest suggest =  new Suggest(
+                username,
+                followerCount
+        );
+        values.put(ElasticSearchConst.SUGGEST_PROPERTIES_KEY, suggest);
+    }
+
 }
