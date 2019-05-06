@@ -1,7 +1,9 @@
 package top.yeonon.huhusearchservice.service;
 
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhusearchservice.vo.request.AutoCompletionRequestVo;
 import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
+import top.yeonon.huhusearchservice.vo.response.AutoCompletionResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchUserResponseVo;
@@ -20,7 +22,7 @@ public interface ISearchService {
      * @throws HuhuException 可能抛出的异常
      */
     SearchQuestionResponseVo searchQuestion(GeneralSearchRequestVo request)
-        throws HuhuException;
+            throws HuhuException;
 
 
     /**
@@ -30,7 +32,7 @@ public interface ISearchService {
      * @throws HuhuException 可能抛出的异常
      */
     SearchAnswerResponseVo searchAnswer(GeneralSearchRequestVo request)
-        throws HuhuException;
+            throws HuhuException;
 
     /**
      * 搜索用户
@@ -39,5 +41,16 @@ public interface ISearchService {
      * @throws HuhuException 可能抛出的异常
      */
     SearchUserResponseVo searchUser(GeneralSearchRequestVo request)
-        throws HuhuException;
+            throws HuhuException;
+
+    /**
+     * 自动补全，智能提示
+     * @param request 请求
+     * @return 响应
+     * @throws HuhuException 可能抛出的异常
+     */
+    AutoCompletionResponseVo autoCompletion(AutoCompletionRequestVo request)
+            throws HuhuException;
+
+
 }

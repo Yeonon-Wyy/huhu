@@ -16,10 +16,12 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.SuggestionBuilder;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,28 +78,28 @@ public class HuhuSearchServiceApplicationTests {
 
 
     @Test
-    public void testSuggest() {
+    public void testSuggest() throws ExecutionException, InterruptedException {
         SuggestBuilder builder = new SuggestBuilder();
 
-        CompletionSuggestionBuilder suggestionBuilder = new CompletionSuggestionBuilder("username");
-        suggestionBuilder.text("zhang").size(20);
+        CompletionSuggestionBuilder suggestionBuilder = new CompletionSuggestionBuilder("suggest");
+        suggestionBuilder.text("wei").size(20);
         builder.addSuggestion("my-suggest-1", suggestionBuilder);
 
 
-        Suggest suggestions = elasticsearchTemplate.suggest(builder, "huhu-completion").getSuggest();
-        System.out.println(suggestions.toString());
+
+        SearchRequestBuilder searchRequestBuilder = client.prepareSearch("huhu-user")
+                .setTypes("test")
+                .setFetchSource(false)
+                .suggest(builder);
+
+        SearchResponse response = searchRequestBuilder.execute().get();
+        CompletionSuggestion suggestion = response.getSuggest().getSuggestion("my-suggest-1");
+        suggestion.getOptions().forEach(option -> {
+            System.out.println(option.getText() + ":" + option.getScore());
+        });
 
     }
 
-    @Test
-    public void testDelete() {
-
-        elasticsearchTemplate.delete(
-                ElasticSearchConst.Completion.INDEX_NAME,
-                ElasticSearchConst.Completion.QUESTION_TYPE_NAME,
-                "1"
-        );
-    }
 
     @Test
     public void testBinlogListener() {

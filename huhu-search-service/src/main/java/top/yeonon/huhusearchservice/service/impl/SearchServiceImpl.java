@@ -1,12 +1,19 @@
 package top.yeonon.huhusearchservice.service.impl;
 
 import com.google.common.collect.Lists;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
 import top.yeonon.huhusearchservice.constant.ErrMessage;
 import top.yeonon.huhusearchservice.entity.Answer;
 import top.yeonon.huhusearchservice.entity.Question;
@@ -15,13 +22,16 @@ import top.yeonon.huhusearchservice.repository.AnswerRepository;
 import top.yeonon.huhusearchservice.repository.QuestionRepository;
 import top.yeonon.huhusearchservice.repository.UserRepository;
 import top.yeonon.huhusearchservice.service.ISearchService;
+import top.yeonon.huhusearchservice.vo.request.AutoCompletionRequestVo;
 import top.yeonon.huhusearchservice.vo.request.GeneralSearchRequestVo;
+import top.yeonon.huhusearchservice.vo.response.AutoCompletionResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchAnswerResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchQuestionResponseVo;
 import top.yeonon.huhusearchservice.vo.response.SearchUserResponseVo;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @Author yeonon
@@ -40,14 +50,18 @@ public class SearchServiceImpl implements ISearchService {
 
     private final UserRepository userRepository;
 
+    private final TransportClient client;
+
 
     @Autowired
     public SearchServiceImpl(QuestionRepository questionRepository,
                              AnswerRepository answerRepository,
-                             UserRepository userRepository) {
+                             UserRepository userRepository,
+                             TransportClient client) {
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
+        this.client = client;
     }
 
 
@@ -167,6 +181,29 @@ public class SearchServiceImpl implements ISearchService {
         );
     }
 
+    @Override
+    public AutoCompletionResponseVo autoCompletion(AutoCompletionRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        CompletionSuggestion suggestion = getSuggestion(
+                request.getSuggestName(),
+                request.getInput(),
+                request.getIndices()
+        );
+
+        List<AutoCompletionResponseVo.Suggestion> suggestionList = Lists.newArrayList();
+        suggestion.getOptions().forEach(option -> {
+            suggestionList.add(new AutoCompletionResponseVo.Suggestion(
+                    option.getText().string(),
+                    option.getScore()
+            ));
+        });
+        return new AutoCompletionResponseVo(
+                suggestionList
+        );
+    }
 
     /**
      * 简单的提取前N个字，N是随机值（20-50，不足则按照实际值）
@@ -180,5 +217,35 @@ public class SearchServiceImpl implements ISearchService {
         }
         int n = random.nextInt((SUMMARY_MAX_COUNT - SUMMARY_MIN_COUNT) + 1) + SUMMARY_MIN_COUNT;
         return content.substring(0, n);
+    }
+
+    /**
+     * 获取suggestion
+     * @param suggestName suggest name (例如question-title-suggest)，这是必须要有的
+     * @param input 输入
+     * @param indices index列表，可以跨越多个index进行自动补全
+     * @return suggestion对象，包含了补全的词汇及其分数（权重）
+     * @throws HuhuException 出错则抛出异常
+     */
+    CompletionSuggestion getSuggestion(String suggestName, String input, String ...indices) throws HuhuException {
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        CompletionSuggestionBuilder suggestionBuilder = new CompletionSuggestionBuilder(ElasticSearchConst.SUGGEST_PROPERTIES_KEY)
+                .text(input)
+                .size(ElasticSearchConst.SUGGEST_COMPLETION_SIZE);
+
+        suggestBuilder.addSuggestion(suggestName, suggestionBuilder);
+
+        SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indices)
+                .setFetchSource(false)
+                .setSize(ElasticSearchConst.SEARCH_RESULT_SIZE)
+                .suggest(suggestBuilder);
+
+        SearchResponse response = null;
+        try {
+            response = searchRequestBuilder.execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new HuhuException(e.getMessage());
+        }
+        return response.getSuggest().getSuggestion(suggestName);
     }
 }

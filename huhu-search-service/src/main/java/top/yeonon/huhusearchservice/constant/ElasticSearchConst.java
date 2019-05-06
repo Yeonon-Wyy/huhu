@@ -8,6 +8,12 @@ public class ElasticSearchConst {
 
     public static final String SUGGEST_PROPERTIES_KEY = "suggest";
 
+    public static final Integer SUGGEST_COMPLETION_SIZE = 10;
+
+    public static final Integer SEARCH_RESULT_SIZE = 10;
+
+    public static final String COMPOSITE_SUGGEST_NAME = "composite_suggest";
+
     public static class QA {
         public static final String INDEX_NAME = "huhu-qa";
 
@@ -18,6 +24,8 @@ public class ElasticSearchConst {
         public static final String SUGGEST_INPUT_KEY = "title";
 
         public static final String SUGGEST_WEIGHT_KEY = "followerCount";
+
+        public static final String SUGGEST_NAME = "question-title-suggest";
     }
 
     public static class User {
@@ -28,6 +36,8 @@ public class ElasticSearchConst {
         public static final String SUGGEST_INPUT_KEY = "username";
 
         public static final String SUGGEST_WEIGHT_KEY = "followerCount";
+
+        public static final String SUGGEST_NAME = "username-suggest";
     }
 
 }

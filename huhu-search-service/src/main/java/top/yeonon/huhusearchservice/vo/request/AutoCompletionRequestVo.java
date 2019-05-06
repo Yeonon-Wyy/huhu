@@ -3,6 +3,7 @@ package top.yeonon.huhusearchservice.vo.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -14,10 +15,16 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class AutoCompletionRequestVo {
 
-    private String text;
+    private String input;
+
+    private String suggestName;
+
+    private String[] indices;
 
     public boolean validate() {
-        return StringUtils.isNotEmpty(text);
+        return StringUtils.isNotEmpty(input)
+                && ArrayUtils.isNotEmpty(indices)
+                && StringUtils.isNotEmpty(suggestName);
     }
 
 }
