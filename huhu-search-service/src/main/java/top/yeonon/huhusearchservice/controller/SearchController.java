@@ -43,7 +43,7 @@ public class SearchController {
     }
 
     @GetMapping("question/autoCompletion")
-    public AutoCompletionResponseVo questionAutoCompletion(@RequestBody AutoCompletionRequestVo request) throws HuhuException {
+    public AutoCompletionResponseVo questionAutoCompletion(AutoCompletionRequestVo request) throws HuhuException {
         request.setSuggestName(ElasticSearchConst.QA.SUGGEST_NAME);
         request.setIndices(new String[]{
                 ElasticSearchConst.QA.INDEX_NAME
@@ -52,7 +52,7 @@ public class SearchController {
     }
 
     @GetMapping("user/autoCompletion")
-    public AutoCompletionResponseVo userAutoCompletion(@RequestBody AutoCompletionRequestVo request) throws HuhuException {
+    public AutoCompletionResponseVo userAutoCompletion(AutoCompletionRequestVo request) throws HuhuException {
         request.setSuggestName(ElasticSearchConst.User.SUGGEST_NAME);
         request.setIndices(new String[]{
                 ElasticSearchConst.User.INDEX_NAME
@@ -61,7 +61,7 @@ public class SearchController {
     }
 
     @GetMapping("composite/autoCompletion")
-    public AutoCompletionResponseVo compositeAutoCompletion(@RequestBody AutoCompletionRequestVo request) throws HuhuException {
+    public AutoCompletionResponseVo compositeAutoCompletion(AutoCompletionRequestVo request) throws HuhuException {
         request.setSuggestName(ElasticSearchConst.COMPOSITE_SUGGEST_NAME);
         request.setIndices(new String[]{
                 ElasticSearchConst.User.INDEX_NAME,

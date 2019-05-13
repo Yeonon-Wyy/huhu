@@ -1,0 +1,19 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: huhu-search-service
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: 47.94.156.44:8848
+        file-extension: yml
+        group: DEV_GROUP
+
+
+
+
+
+
