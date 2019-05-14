@@ -65,7 +65,11 @@ public class UserController {
 
 
     @GetMapping("/batch/query")
-    public UserBatchQueryResponseVo batchQueryUserInfo(@RequestBody UserBatchQueryRequestVo request) throws HuhuException {
+    public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request,
+                                                       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
+        request.setPageNum(pageNum);
+        request.setPageSize(pageSize);
         return userService.batchQueryUserInfo(request);
     }
 

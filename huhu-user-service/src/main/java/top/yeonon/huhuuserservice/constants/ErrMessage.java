@@ -28,4 +28,6 @@ public class ErrMessage {
 
     public static final String VALIDATE_CODE_ERROR = "验证码错误";
 
+    public static final String NOT_EXIST_TOKEN_IN_HEADER = "Header里不存在Token";
+
 }

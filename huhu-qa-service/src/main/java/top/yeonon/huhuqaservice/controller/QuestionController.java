@@ -45,7 +45,11 @@ public class QuestionController {
     }
 
     @GetMapping
-    public QuestionQueryAllResponseVo queryAllQuestion(@RequestBody QuestionQueryAllRequestVo request) {
+    public QuestionQueryAllResponseVo queryAllQuestion(QuestionQueryAllRequestVo request,
+                                                       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        request.setPageNum(pageNum);
+        request.setPageSize(pageSize);
         return questionService.queryAll(request);
     }
 

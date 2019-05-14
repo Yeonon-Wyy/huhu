@@ -3,8 +3,6 @@ spring:
     name: huhu-user-service
   profiles:
     active: dev
-
-
   cloud:
     nacos:
       config:

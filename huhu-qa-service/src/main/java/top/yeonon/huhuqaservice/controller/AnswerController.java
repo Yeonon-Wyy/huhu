@@ -38,17 +38,25 @@ public class AnswerController {
         return answerService.createAnswer(request);
     }
 
-    //查询该questionId下的所有问题
+    //查询该questionId下的所有回答
     @GetMapping("/{questionId}")
-    public AnswerBatchQueryResponseVo batchQueryAnswer(@RequestBody AnswerBatchQueryRequestVo request,
-                                                       @PathVariable("questionId") Long questionId) throws HuhuException {
+    public AnswerBatchQueryResponseVo batchQueryAnswer(AnswerBatchQueryRequestVo request,
+                                                       @PathVariable("questionId") Long questionId,
+                                                       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
         request.setQuestionId(questionId);
+        request.setPageSize(pageSize);
+        request.setPageNum(pageNum);
         return answerService.batchQueryAnswer(request);
     }
 
     //查询某个用户的所有回答
     @GetMapping
-    public AnswerBatchQueryByUserIdResponseVo batchQueryByUserId(@RequestBody AnswerBatchQueryByUserIdRequestVo request) throws HuhuException {
+    public AnswerBatchQueryByUserIdResponseVo batchQueryByUserId(AnswerBatchQueryByUserIdRequestVo request,
+                                                                 @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                                 @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
+        request.setPageNum(pageNum);
+        request.setPageSize(pageSize);
         return answerService.queryAnswerByUserId(request);
     }
 

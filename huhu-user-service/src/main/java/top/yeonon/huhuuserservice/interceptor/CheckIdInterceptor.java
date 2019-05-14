@@ -46,6 +46,10 @@ public class CheckIdInterceptor implements HandlerInterceptor {
         }
 
         //从请求头中获取Token
+        String tokenWithBaraer = request.getHeader(AUTH_TOKEN);
+        if (tokenWithBaraer == null) {
+            throw new HuhuException(ErrMessage.NOT_EXIST_TOKEN_IN_HEADER);
+        }
         String token = request.getHeader(AUTH_TOKEN).substring(7);
         Claims body = CommonUtils.parseJwtToken(token, huhuSecurityProperties.getJwt().getSignKey());
 

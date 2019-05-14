@@ -54,15 +54,23 @@ public class CommentController {
 
     @GetMapping("/question/{questionId}")
     public CommentQueryAllResponseVo queryAllQuestionComment(@PathVariable("questionId") Long questionId,
-                                                             @RequestBody QuestionCommentQueryAllRequestVo request) throws HuhuException {
+                                                             QuestionCommentQueryAllRequestVo request,
+                                                             @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
         request.setQuestionId(questionId);
+        request.setPageNum(pageNum);
+        request.setPageSize(pageSize);
         return commentService.queryAllQuestionComment(request);
     }
 
     @GetMapping("/answer/{answerId}")
     public CommentQueryAllResponseVo queryAllAnswerComment(@PathVariable("answerId") Long answerId,
-                                                           @RequestBody AnswerCommentQueryAllRequestVo request) throws HuhuException {
+                                                           AnswerCommentQueryAllRequestVo request,
+                                                           @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
+                                                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
         request.setAnswerId(answerId);
+        request.setPageNum(pageNum);
+        request.setPageSize(pageSize);
         return commentService.queryAllAnswerComment(request);
     }
 
