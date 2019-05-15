@@ -35,13 +35,29 @@ public class AnswerBatchQueryResponseVo {
     public static class AnswerInfo {
         //用于获取关联的评论
         private Long id;
-        //用于获取用户信息，标识答案所属
-        private Long userId;
         private String content;
         private Integer status;
         private Long approvalCount;
         private Long commentCount;
         private Date createTime;
         private Date updateTime;
+
+        private BriefUserInfo briefUserInfo;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BriefUserInfo {
+        private String username;
+        private Integer status;
+        private String avatar;
+        private Integer followerCount;
+        private Integer followingCount;
+        private String profile;
+        private Integer degree;
+
+        private Integer answerCount;
+        private Integer questionCount;
     }
 }

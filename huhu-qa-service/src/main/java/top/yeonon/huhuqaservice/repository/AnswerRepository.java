@@ -65,4 +65,12 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("update Answer a set a.approvalCount = :approvalCount where a.id = :id")
     void updateApprovalCount(@Param("approvalCount") Long approvalCount,
                              @Param("id") Long id);
+
+    /**
+     * 获取某用户的回答数量
+     * @param userId 用户ID
+     * @return 回答数
+     */
+    @Query("select COUNT(1) FROM Answer a where a.userId=:userId")
+    Integer findCountByUserId(@Param("userId") Long userId);
 }

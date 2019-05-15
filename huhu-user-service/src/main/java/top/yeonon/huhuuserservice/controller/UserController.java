@@ -63,6 +63,11 @@ public class UserController {
         return userService.deleteUser(request);
     }
 
+    @GetMapping("brief/{id}")
+    public BriefUserQueryResponseVo queryBriefUserInfo(@PathVariable("id") Long id) throws HuhuException {
+        BriefUserQueryRequestVo request = new BriefUserQueryRequestVo(id);
+        return userService.queryBriefUserInfo(request);
+    }
 
     @GetMapping("/batch/query")
     public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request,

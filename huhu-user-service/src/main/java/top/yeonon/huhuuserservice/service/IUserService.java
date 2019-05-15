@@ -81,6 +81,19 @@ public interface IUserService {
      */
     void updatePassword(UpdatePassRequestVo request) throws HuhuException;
 
+    /**
+     * 上传头像
+     * @param requestVo 包含头像二进制文件
+     * @return 响应对象
+     * @throws HuhuException 可能抛出的异常
+     */
     UploadAvatarResponseVo uploadAvatar(UploadAvatarRequestVo requestVo) throws HuhuException;
 
+    /**
+     * 获取用户简要信息（即可以公开的信息）
+     * @param request 请求（用户ID）
+     * @return 响应对象
+     * @throws HuhuException 可能抛出的异常
+     */
+    BriefUserQueryResponseVo queryBriefUserInfo(BriefUserQueryRequestVo request) throws HuhuException;
 }

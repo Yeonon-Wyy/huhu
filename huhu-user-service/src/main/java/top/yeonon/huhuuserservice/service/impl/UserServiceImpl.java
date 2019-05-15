@@ -286,4 +286,30 @@ public class UserServiceImpl implements IUserService {
         userRepository.updateAvatarById(filePath, request.getUserId());
         return new UploadAvatarResponseVo(filePath);
     }
+
+    @Override
+    public BriefUserQueryResponseVo queryBriefUserInfo(BriefUserQueryRequestVo request) throws HuhuException {
+        if (!request.validate()) {
+            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+        }
+
+        User user = userRepository.findById(request.getUserId()).orElse(null);
+        if (user == null) {
+            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+        }
+
+        BriefUserQueryResponseVo.BriefUserInfo briefUserInfo = new BriefUserQueryResponseVo.BriefUserInfo(
+                user.getUsername(),
+                user.getStatus(),
+                user.getAvatar(),
+                user.getSex(),
+                user.getFollowerCount(),
+                user.getFollowingCount(),
+                user.getProfile(),
+                user.getDegree()
+        );
+
+        return new BriefUserQueryResponseVo(briefUserInfo);
+
+    }
 }

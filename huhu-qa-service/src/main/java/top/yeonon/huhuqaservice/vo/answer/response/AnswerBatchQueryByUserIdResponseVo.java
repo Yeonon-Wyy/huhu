@@ -35,7 +35,6 @@ public class AnswerBatchQueryByUserIdResponseVo {
     @NoArgsConstructor
     public static class AnswerInfo {
         private Long id;
-        private Long userId;
         private String content;
         private Long approvalCount;
         private Long commentCount;
@@ -45,4 +44,6 @@ public class AnswerBatchQueryByUserIdResponseVo {
         private Date createTime;
         private Date updateTime;
     }
+
+
 }

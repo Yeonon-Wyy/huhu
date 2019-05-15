@@ -1,5 +1,8 @@
 package top.yeonon.huhuqaservice.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,8 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ServerResponse;
+import top.yeonon.huhuqaservice.client.HuhuUserClient;
 import top.yeonon.huhuqaservice.constant.AnswerStatus;
 import top.yeonon.huhuqaservice.constant.Const;
 import top.yeonon.huhuqaservice.constant.ErrMessage;
@@ -21,8 +26,8 @@ import top.yeonon.huhuqaservice.service.IAnswerService;
 import top.yeonon.huhuqaservice.vo.answer.request.*;
 import top.yeonon.huhuqaservice.vo.answer.response.*;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -40,14 +45,18 @@ public class AnswerServiceImpl implements IAnswerService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
+    private final HuhuUserClient huhuUserClient;
+
 
     @Autowired
     public AnswerServiceImpl(QuestionRepository questionRepository,
                              AnswerRepository answerRepository,
-                             RedisTemplate<String, String> redisTemplate) {
+                             RedisTemplate<String, String> redisTemplate,
+                             HuhuUserClient huhuUserClient) {
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
         this.redisTemplate = redisTemplate;
+        this.huhuUserClient = huhuUserClient;
     }
 
     @Override
@@ -96,18 +105,20 @@ public class AnswerServiceImpl implements IAnswerService {
 
         //组装VO对象
         List<AnswerBatchQueryResponseVo.AnswerInfo> answerInfoList = Lists.newArrayList();
-        answers.forEach(answer -> {
+
+
+        for (Answer answer : answers) {
             answerInfoList.add(new AnswerBatchQueryResponseVo.AnswerInfo(
                     answer.getId(),
-                    answer.getUserId(),
                     answer.getContent(),
                     answer.getStatus(),
                     answer.getApprovalCount(),
                     answer.getCommentCount(),
                     answer.getCreateTime(),
-                    answer.getUpdateTime()
+                    answer.getUpdateTime(),
+                    assembleBriefUserInfo(answer.getUserId())
             ));
-        });
+        }
 
         return new AnswerBatchQueryResponseVo(
                 answerInfoList,
@@ -118,7 +129,26 @@ public class AnswerServiceImpl implements IAnswerService {
                 answers.isFirst(),
                 answers.isLast()
         );
+    }
 
+    private AnswerBatchQueryResponseVo.BriefUserInfo assembleBriefUserInfo(Long userId) throws HuhuException {
+        ServerResponse response = huhuUserClient.queryBriefUserInfo(userId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(((LinkedHashMap) response.getData()).get("briefUserInfo"));
+            AnswerBatchQueryResponseVo.BriefUserInfo userInfo = objectMapper.readValue(json, AnswerBatchQueryResponseVo.BriefUserInfo.class);
+            if (userInfo == null) {
+                throw new HuhuException(ErrMessage.JSON_PARSE_ERROR);
+            }
+
+            userInfo.setQuestionCount(questionRepository.findCountByUserId(userId));
+            userInfo.setAnswerCount(answerRepository.findCountByUserId(userId));
+            return userInfo;
+        } catch (IOException e) {
+            throw new HuhuException(ErrMessage.JSON_PARSE_ERROR);
+        }
     }
 
     @Override
@@ -171,10 +201,10 @@ public class AnswerServiceImpl implements IAnswerService {
         ));
 
         List<AnswerBatchQueryByUserIdResponseVo.AnswerInfo> answerInfoList = Lists.newArrayList();
-        answers.forEach(answer -> {
+
+        for (Answer answer : answers) {
             answerInfoList.add(new AnswerBatchQueryByUserIdResponseVo.AnswerInfo(
                     answer.getId(),
-                    answer.getUserId(),
                     answer.getContent(),
                     answer.getApprovalCount(),
                     answer.getCommentCount(),
@@ -184,7 +214,7 @@ public class AnswerServiceImpl implements IAnswerService {
                     answer.getCreateTime(),
                     answer.getUpdateTime()
             ));
-        });
+        }
 
         return new AnswerBatchQueryByUserIdResponseVo(
                 answerInfoList,
@@ -196,6 +226,8 @@ public class AnswerServiceImpl implements IAnswerService {
                 answers.isLast()
         );
     }
+
+
 
 
     @Override

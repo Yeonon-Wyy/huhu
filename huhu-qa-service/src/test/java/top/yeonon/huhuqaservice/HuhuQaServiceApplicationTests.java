@@ -1,11 +1,18 @@
 package top.yeonon.huhuqaservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import top.yeonon.huhucommon.response.ServerResponse;
+import top.yeonon.huhuqaservice.client.HuhuUserClient;
 import top.yeonon.huhuqaservice.entity.Answer;
 import top.yeonon.huhuqaservice.entity.Question;
 import top.yeonon.huhuqaservice.repository.AnswerRepository;
@@ -19,66 +26,38 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 public class HuhuQaServiceApplicationTests {
 
     @Autowired
-    private QuestionRepository questionRepository;
-
-    @Autowired
-    private AnswerRepository answerRepository;
+    private HuhuUserClient huhuUserClient;
 
     @Test
-    public void contextLoads() {
-    }
-
-    @Test
-    public void dumpQuestion() {
+    public void testGetBriefInfo() throws IOException {
+        ServerResponse response = huhuUserClient.queryBriefUserInfo(5L);
         ObjectMapper objectMapper = new ObjectMapper();
-        Iterable<Question> questions = questionRepository.findAll();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        String json = objectMapper.writeValueAsString(((LinkedHashMap)response.getData()).get("briefUserInfo"));
+        BriefUserInfo userInfo = objectMapper.readValue(json,BriefUserInfo.class);
 
-        try (BufferedWriter writer = Files.newBufferedWriter(constructPath("question.json"))) {
-            for (Question question : questions) {
-                Index index = new Index(new ID(question.getId().toString()));
-                writeLine(writer, objectMapper.writeValueAsString(index));
-                writeLine(writer, objectMapper.writeValueAsString(question));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    @Test
-    public void dumpAnswer() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Iterable<Answer> answers = answerRepository.findAll();
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BriefUserInfo {
+        private String username;
+        private Integer status;
+        private String avatar;
+        private Integer followerCount;
+        private Integer followingCount;
+        private String profile;
+        private Integer degree;
 
-        try (BufferedWriter writer = Files.newBufferedWriter(constructPath("answer.json"))) {
-            for (Answer answer : answers) {
-                Index index = new Index(new ID(answer.getId().toString()));
-                writeLine(writer, objectMapper.writeValueAsString(index));
-                writeLine(writer, objectMapper.writeValueAsString(answer));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        private Integer answerCount;
+        private Integer questionCount;
     }
-
-    private Path constructPath(String filename) {
-        filename = "\\..\\mysql-data\\" + filename;
-        String rootPath = System.getProperty("user.dir");
-        return Paths.get(rootPath + filename);
-    }
-
-    private void writeLine(BufferedWriter writer, String jsonStr) {
-        try {
-            writer.write(jsonStr);
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

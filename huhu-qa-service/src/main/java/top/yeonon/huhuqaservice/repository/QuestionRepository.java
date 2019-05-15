@@ -69,4 +69,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("select q.title from Question q WHERE q.id = :id")
     String findTitleById(@Param("id") Long id);
 
+    /**
+     * 获取某用户的提问数量
+     * @param userId 用户ID
+     * @return 提问数量
+     */
+    @Query("select COUNT(1) FROM Question q where q.userId=:userId")
+    Integer findCountByUserId(@Param("userId") Long userId);
+
 }

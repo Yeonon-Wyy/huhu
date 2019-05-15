@@ -10,5 +10,7 @@ public class Const {
         public static final String ROLE_PREFIX = "ROLE_";
     }
 
+    public static final String AUTH_TOKEN_HEADER_KEY_NAME = "Authorization";
+
 
 }
