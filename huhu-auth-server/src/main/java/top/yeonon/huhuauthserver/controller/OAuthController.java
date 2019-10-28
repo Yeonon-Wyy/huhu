@@ -36,6 +36,7 @@ public class OAuthController {
     @GetMapping("/current")
     @IgnoreAdvice
     public Principal getUser(Principal principal) {
+        System.out.println("验证用户");
         return principal;
     }
 

@@ -2,6 +2,7 @@ package top.yeonon.huhuuserservice.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -18,6 +19,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers(HttpMethod.POST, "/users")
-                .antMatchers(HttpMethod.GET, "/users/**");
+                .antMatchers(HttpMethod.POST,"/users/password/**")
+                .antMatchers(HttpMethod.PUT, "/users/password/**");
     }
 }

@@ -3,6 +3,7 @@ package top.yeonon.huhuuserservice.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -33,9 +34,10 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(huhuSecurityProperties.getAuthenticationPath())
-                .authenticated();
+        http.authorizeRequests().antMatchers(HttpMethod.DELETE, huhuSecurityProperties.getAuthenticationPath()).authenticated();
+        http.authorizeRequests().antMatchers(HttpMethod.POST, huhuSecurityProperties.getAuthenticationPath()).authenticated();
+        http.authorizeRequests().antMatchers(HttpMethod.PUT, huhuSecurityProperties.getAuthenticationPath()).authenticated();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/users").authenticated();
     }
 
 

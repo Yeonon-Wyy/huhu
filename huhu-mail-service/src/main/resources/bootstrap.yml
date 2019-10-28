@@ -4,10 +4,8 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 47.94.156.44:8848
+        server-addr: 127.0.0.1:8848
         file-extension: yml
-        group: DEV_GROUP
-  profiles:
-    active: dev
+
 server:
   port: 9000

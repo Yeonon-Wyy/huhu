@@ -2,6 +2,7 @@ package top.yeonon.huhuuserservice.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.yeonon.huhucommon.exception.HuhuException;
@@ -70,7 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/batch/query")
-    public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request,
+    public UserBatchQueryResponseVo batchQueryUserInfo(@RequestBody UserBatchQueryRequestVo request,
                                                        @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
                                                        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) throws HuhuException {
         request.setPageNum(pageNum);

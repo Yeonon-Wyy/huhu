@@ -13,7 +13,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>
@@ -31,11 +31,13 @@
             <version>3.0.6.RELEASE</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.github.shyiko/mysql-binlog-connector-java -->
         <dependency>
             <groupId>com.github.shyiko</groupId>
             <artifactId>mysql-binlog-connector-java</artifactId>
-            <version>0.18.1</version>
+            <version>0.20.1</version>
         </dependency>
+
 
         <dependency>
             <groupId>mysql</groupId>
@@ -62,11 +64,13 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <version>0.9.0.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>0.9.0.RELEASE</version>
         </dependency>
 
     </dependencies>

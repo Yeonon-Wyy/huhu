@@ -1,15 +1,13 @@
 spring:
   application:
-    name: huhu-auth-server
-  profiles:
-    active: dev
+    name: huhu-auth-service
 
   cloud:
     nacos:
       config:
-        server-addr: 47.94.156.44:8848
+        server-addr: localhost:8848
         file-extension: yml
-        group: DEV_GROUP
+
 server:
   port: 8000
 
