@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuqaservice.constant.CommentType;
 import top.yeonon.huhuqaservice.constant.ErrMessage;
@@ -55,11 +56,9 @@ public class CommentServiceImpl implements ICommentService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public CommentCreateResponseVo createQuestionComment(QuestionCommentCreateRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         if (questionCommentRepository.existsByUserIdAndQuestionId(request.getUserId(), request.getQuestionId())) {
             throw new HuhuException(ErrMessage.EXIST_SAME_QUESTION_COMMENT);
@@ -88,11 +87,10 @@ public class CommentServiceImpl implements ICommentService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public CommentCreateResponseVo createAnswerComment(AnswerCommentCreateRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
 
         if (answerCommentRepository.existsByUserIdAndAnswerId(request.getUserId(), request.getAnswerId())) {
             throw new HuhuException(ErrMessage.EXIST_SAME_ANSWER_COMMENT);
@@ -120,10 +118,8 @@ public class CommentServiceImpl implements ICommentService {
     }
 
     @Override
+    @ParamValidate
     public CommentQueryAllResponseVo queryAllQuestionComment(QuestionCommentQueryAllRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         if (!questionRepository.existsById(request.getQuestionId())) {
             throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
@@ -166,10 +162,9 @@ public class CommentServiceImpl implements ICommentService {
     }
 
     @Override
+    @ParamValidate
     public CommentQueryAllResponseVo queryAllAnswerComment(AnswerCommentQueryAllRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
 
         if (!answerRepository.existsById(request.getAnswerId())) {
             throw new HuhuException(ErrMessage.NOT_FOUND_ANSWER);

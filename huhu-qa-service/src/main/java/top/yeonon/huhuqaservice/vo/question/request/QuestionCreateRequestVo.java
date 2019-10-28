@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionCreateRequestVo {
+public class QuestionCreateRequestVo implements RequestVo {
 
     private Long userId;
 
@@ -25,6 +26,7 @@ public class QuestionCreateRequestVo {
     private Set<String> tagNames;
 
     //tag可以为空
+    @Override
     public boolean validate() {
         return userId != null
                 && userId > 0

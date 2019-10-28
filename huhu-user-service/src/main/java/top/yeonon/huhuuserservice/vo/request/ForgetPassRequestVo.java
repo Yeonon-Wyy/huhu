@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 
 /**
  * @Author yeonon
@@ -12,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ForgetPassRequestVo {
+public class ForgetPassRequestVo implements RequestVo {
 
     //username 和 email是用户填写的
     private String username;

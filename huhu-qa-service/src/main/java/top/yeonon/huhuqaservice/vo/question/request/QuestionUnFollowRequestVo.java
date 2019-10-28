@@ -3,6 +3,7 @@ package top.yeonon.huhuqaservice.vo.question.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.yeonon.huhucommon.request.RequestVo;
 import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
@@ -12,7 +13,7 @@ import top.yeonon.huhucommon.utils.CommonUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionUnFollowRequestVo {
+public class QuestionUnFollowRequestVo implements RequestVo {
 
     private Long questionId;
 

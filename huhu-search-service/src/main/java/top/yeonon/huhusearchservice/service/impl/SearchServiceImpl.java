@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
 import top.yeonon.huhusearchservice.constant.ErrMessage;
@@ -66,10 +67,9 @@ public class SearchServiceImpl implements ISearchService {
 
 
     @Override
+    @ParamValidate
     public SearchQuestionResponseVo searchQuestion(GeneralSearchRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
         Sort sort = new Sort(Sort.Direction.DESC, "followerCount");
 
         Page<Question> questions = questionRepository.findAllByTitleLikeOrContentLike(
@@ -105,10 +105,8 @@ public class SearchServiceImpl implements ISearchService {
     }
 
     @Override
+    @ParamValidate
     public SearchAnswerResponseVo searchAnswer(GeneralSearchRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
         Page<Answer> answers = answerRepository.findAllByContentLike(
@@ -142,10 +140,9 @@ public class SearchServiceImpl implements ISearchService {
     }
 
     @Override
+    @ParamValidate
     public SearchUserResponseVo searchUser(GeneralSearchRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
         Sort sort = new Sort(Sort.Direction.DESC, "followerCount");
 
         Page<User> users = userRepository.findAllByUsernameLikeOrProfileLike(
@@ -182,10 +179,8 @@ public class SearchServiceImpl implements ISearchService {
     }
 
     @Override
+    @ParamValidate
     public AutoCompletionResponseVo autoCompletion(AutoCompletionRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         CompletionSuggestion suggestion = getSuggestion(
                 request.getSuggestName(),

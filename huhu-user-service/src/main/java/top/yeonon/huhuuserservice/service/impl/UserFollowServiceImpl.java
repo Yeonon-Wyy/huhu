@@ -3,6 +3,7 @@ package top.yeonon.huhuuserservice.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuuserservice.constants.ErrMessage;
 import top.yeonon.huhuuserservice.constants.UserStatus;
@@ -48,12 +49,8 @@ public class UserFollowServiceImpl implements IUserFollowService {
     }
 
     @Override
+    @ParamValidate
     public UserFollowResponseVo follow(UserFollowRequestVo request) throws HuhuException {
-
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
-
 
         if (request.getFollowUserId().equals(request.getUserId())) {
             throw new HuhuException(ErrMessage.NOT_ALLOW_FOLLOW_YOURSELF);
@@ -99,13 +96,9 @@ public class UserFollowServiceImpl implements IUserFollowService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public UserUnFollowResponseVo unFollow(UserUnFollowRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
-
-
 
         //检查是否是自己关注自己
         if (request.getUnFollowId().equals(request.getUserId())) {
@@ -137,10 +130,8 @@ public class UserFollowServiceImpl implements IUserFollowService {
     }
 
     @Override
+    @ParamValidate
     public FollowerQueryResponseVo queryFollower(FollowerQueryRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         //这里不检查传入的用户ID是否存在了，因为如果没有任何关注者，就不会存在记录，返回的内容也应该是空
         List<UserFollower> userFollowers = userFollowerRepository.findByUserId(request.getId());
@@ -152,10 +143,8 @@ public class UserFollowServiceImpl implements IUserFollowService {
     }
 
     @Override
+    @ParamValidate
     public FollowingQueryResponseVo queryFollowing(FollowingQueryRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         List<UserFollowing> userFollowings = userFollowingRepository.findByUserId(request.getId());
         List<Long> followingIds = new LinkedList<>();

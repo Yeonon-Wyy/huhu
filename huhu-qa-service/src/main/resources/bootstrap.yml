@@ -7,13 +7,7 @@ spring:
         server-addr: 127.0.0.1:8848
         file-extension: yml
 
-
-server:
-  port: 5000
-
 huhu:
-  security:
+  auth:
     jwt:
-      signKey: huhu-project
-
-
+      SignKey: huhu-project

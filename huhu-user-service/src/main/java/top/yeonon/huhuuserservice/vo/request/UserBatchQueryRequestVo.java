@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBatchQueryRequestVo {
+public class UserBatchQueryRequestVo implements RequestVo {
 
     private List<Long> ids;
 

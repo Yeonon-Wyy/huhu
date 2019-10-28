@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TemplateMessageRequestVo {
+public class TemplateMessageRequestVo implements RequestVo {
 
     private String from;
 
@@ -24,6 +25,7 @@ public class TemplateMessageRequestVo {
 
     private Map<String, Object> content;
 
+    @Override
     public boolean validate() {
         return StringUtils.isNotEmpty(to)
                 && StringUtils.isNotEmpty(from)

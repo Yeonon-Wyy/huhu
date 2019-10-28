@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.client.HuhuMailClient;
@@ -58,10 +59,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @ParamValidate
     public UserRegisterResponseVo register(UserRegisterRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new HuhuException(ErrMessage.EXIST_SAME_USERNAME);
@@ -80,10 +79,8 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
+    @ParamValidate
     public UserQueryResponseVo queryUserInfo(UserQueryRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
@@ -111,11 +108,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @ParamValidate
     public UserUpdateResponseVo updateUserInfo(UserUpdateRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
-
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
@@ -131,6 +125,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @ParamValidate
     public UserDeleteResponseVo deleteUser(UserDeleteRequestVo request) throws HuhuException {
         if (!request.validate()) {
             throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
@@ -157,6 +152,7 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
+    @ParamValidate
     public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request) throws HuhuException {
         if (!request.validate()) {
             throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
@@ -197,10 +193,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @ParamValidate
     public void forgetPass(ForgetPassRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
         if (!userRepository.existsByUsernameAndEmail(request.getUsername(), request.getEmail())) {
             throw new HuhuException(ErrMessage.USERNAME_NOT_MATCH_EMAIL);
         }
@@ -225,26 +220,23 @@ public class UserServiceImpl implements IUserService {
 
     }
 
-
-    private void checkValidateCode(String username, String validatCode) throws HuhuException {
-
+    @ParamValidate
+    private void checkValidateCode(String username, String validateCode) throws HuhuException {
 
         String redisValidateCode = (String) redisTemplate.opsForValue().get(
                 Const.RedisConst.FORGET_PASSWORD_VALIDATE_CODE_PREFIX + username
         );
 
-        if (!validatCode.equals(redisValidateCode)) {
+        if (!validateCode.equals(redisValidateCode)) {
             throw new HuhuException(ErrMessage.VALIDATE_CODE_ERROR);
         }
 
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public void updatePassword(UpdatePassRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         //检查验证码是否正确
         checkValidateCode(request.getUsername(), request.getValidateCode());
@@ -266,11 +258,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public UploadAvatarResponseVo uploadAvatar(UploadAvatarRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
         String avatarFileName = CommonUtils.uploadFile(
                 ftpProperties.getHost(),
                 ftpProperties.getPort(),
@@ -288,10 +279,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @ParamValidate
     public BriefUserQueryResponseVo queryBriefUserInfo(BriefUserQueryRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         User user = userRepository.findById(request.getUserId()).orElse(null);
         if (user == null) {

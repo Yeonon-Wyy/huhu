@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.entity.User;
 
@@ -14,7 +15,7 @@ import top.yeonon.huhuuserservice.entity.User;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserUpdateRequestVo {
+public class UserUpdateRequestVo implements RequestVo {
 
     private Long id;
     private String address;

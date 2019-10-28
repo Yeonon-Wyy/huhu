@@ -8,9 +8,6 @@ spring:
         server-addr: localhost:8848
         file-extension: yml
 
-server:
-  port: 8000
-
 
 
 huhu:

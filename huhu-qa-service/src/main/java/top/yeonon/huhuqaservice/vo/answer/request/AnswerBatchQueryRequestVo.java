@@ -3,6 +3,7 @@ package top.yeonon.huhuqaservice.vo.answer.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.yeonon.huhucommon.request.RequestVo;
 import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
@@ -13,7 +14,7 @@ import top.yeonon.huhucommon.utils.CommonUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerBatchQueryRequestVo {
+public class AnswerBatchQueryRequestVo implements RequestVo {
 
 
     private Long questionId;
@@ -24,6 +25,7 @@ public class AnswerBatchQueryRequestVo {
 
 
     public boolean validate() {
-        return CommonUtils.checkId(questionId);
+        return CommonUtils.checkId(questionId)
+                && pageNum >= 0 && pageSize > 1;
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 import top.yeonon.huhuqaservice.entity.Question;
 
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionUpdateRequestVo {
+public class QuestionUpdateRequestVo implements RequestVo {
 
     private Long id;
 

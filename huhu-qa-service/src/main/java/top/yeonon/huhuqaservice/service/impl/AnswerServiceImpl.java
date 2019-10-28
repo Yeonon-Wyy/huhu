@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhucommon.response.ServerResponse;
 import top.yeonon.huhuqaservice.client.HuhuUserClient;
@@ -60,11 +61,10 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public AnswerCreateResponseVo createAnswer(AnswerCreateRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
 
         if (!questionRepository.existsById(request.getQuestionId())) {
             throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
@@ -88,10 +88,9 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
+    @ParamValidate
     public AnswerBatchQueryResponseVo batchQueryAnswer(AnswerBatchQueryRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
 
         //分页查询数据
         Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
@@ -131,6 +130,7 @@ public class AnswerServiceImpl implements IAnswerService {
         );
     }
 
+
     private AnswerBatchQueryResponseVo.BriefUserInfo assembleBriefUserInfo(Long userId) throws HuhuException {
         ServerResponse response = huhuUserClient.queryBriefUserInfo(userId);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -152,11 +152,9 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public AnswerUpdateResponseVo updateAnswer(AnswerUpdateRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         Answer answer = answerRepository.findByIdAndUserId(request.getId(), request.getUserId());
         if (answer == null
@@ -171,11 +169,9 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public AnswerDeleteResponseVo deleteAnswer(AnswerDeleteRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         Answer answer = answerRepository.findByIdAndUserId(request.getId(), request.getUserId());
         if (answer == null
@@ -188,10 +184,8 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
+    @ParamValidate
     public AnswerBatchQueryByUserIdResponseVo queryAnswerByUserId(AnswerBatchQueryByUserIdRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         Sort sort = new Sort(Sort.Direction.DESC, "approvalCount");
         Page<Answer> answers = answerRepository.findAllByUserId(request.getUserId(),PageRequest.of(
@@ -231,10 +225,9 @@ public class AnswerServiceImpl implements IAnswerService {
 
 
     @Override
+    @ParamValidate
     public AnswerApprovalResponseVo approvalAnswer(AnswerApprovalRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
         Long index = redisTemplate.opsForZSet().rank(
                 Const.RedisConst.ANSWER_APPROVAL_KEY + ":user:" + request.getUserId(),
                 request.getAnswerId().toString());

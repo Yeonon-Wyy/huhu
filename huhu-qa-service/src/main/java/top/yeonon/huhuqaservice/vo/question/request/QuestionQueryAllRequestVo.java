@@ -3,6 +3,7 @@ package top.yeonon.huhuqaservice.vo.question.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.yeonon.huhucommon.request.RequestVo;
 
 /**
  * @Author yeonon
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionQueryAllRequestVo {
+public class QuestionQueryAllRequestVo implements RequestVo {
 
     private Integer pageNum;
 

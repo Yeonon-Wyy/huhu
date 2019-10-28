@@ -9,6 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhumailservice.constants.ErrMessage;
 import top.yeonon.huhumailservice.service.IMailService;
@@ -55,13 +56,8 @@ public class MailServiceImpl implements IMailService {
 
 
     @Override
+    @ParamValidate
     public void sendHtmlMail(TemplateMessageRequestVo request, String templateName) throws HuhuException {
-
-
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.INVALID_FORMATE);
-        }
-
         //用线程池去执行发送邮件任务，即同步改异步
         threadPoolTaskExecutor.execute(() -> {
             MimeMessage mimeMessage = mailSender.createMimeMessage();

@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhuqaservice.constant.ErrMessage;
 import top.yeonon.huhuqaservice.constant.QuestionStatus;
@@ -52,12 +53,9 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public QuestionCreateResponseVo createQuestion(QuestionCreateRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
-
         if (questionRepository.existsByTitle(request.getTitle())) {
             throw new HuhuException(ErrMessage.EXIST_SAME_TITLE);
         }
@@ -89,10 +87,8 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    @ParamValidate
     public QuestionQueryResponseVo queryQuestion(QuestionQueryRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         Question question = questionRepository.findById(request.getId()).orElse(null);
         if (question == null) {
@@ -113,11 +109,9 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public QuestionUpdateResponseVo updateQuestion(QuestionUpdateRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
         if (question == null
@@ -136,11 +130,9 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public QuestionDeleteResponseVo deleteQuestion(QuestionDeleteRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         //防止他人修改问题
         Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
@@ -155,6 +147,7 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    @ParamValidate
     public QuestionQueryAllResponseVo queryAll(QuestionQueryAllRequestVo request) {
 
         Sort sort = new Sort(Sort.Direction.ASC, "id");
@@ -187,11 +180,10 @@ public class QuestionServiceImpl implements IQuestionService {
 
 
     @Override
+    @ParamValidate
     @Transactional
     public void followQuestion(QuestionFollowRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
+
 
         if (!questionRepository.existsById(request.getQuestionId())) {
             throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
@@ -217,11 +209,9 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    @ParamValidate
     @Transactional
     public void unFollowQuestion(QuestionUnFollowRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         if (!questionRepository.existsById(request.getQuestionId())) {
             throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 
 /**
  * @Author yeonon
@@ -12,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterRequestVo {
+public class UserRegisterRequestVo implements RequestVo {
 
     private String username;
     private String password;

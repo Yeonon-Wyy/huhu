@@ -7,5 +7,4 @@ spring:
         server-addr: 127.0.0.1:8848
         file-extension: yml
 
-server:
-  port: 9000
+

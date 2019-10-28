@@ -3,6 +3,7 @@ package top.yeonon.huhuuserservice.vo.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.yeonon.huhucommon.request.RequestVo;
 import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
@@ -12,7 +13,7 @@ import top.yeonon.huhucommon.utils.CommonUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserFollowRequestVo {
+public class UserFollowRequestVo implements RequestVo {
 
     //发起关注请求的用户ID
     private Long userId;

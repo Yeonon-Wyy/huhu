@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import top.yeonon.huhucommon.request.RequestVo;
 import top.yeonon.huhucommon.utils.CommonUtils;
 
 /**
@@ -13,7 +14,7 @@ import top.yeonon.huhucommon.utils.CommonUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionCommentCreateRequestVo {
+public class QuestionCommentCreateRequestVo implements RequestVo {
 
     private Long userId;
 

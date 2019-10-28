@@ -9,9 +9,6 @@ spring:
         file-extension: yml
 
 
-server:
-  port: 7000
-
 huhu:
   security:
     authenticationPath: /users/**
