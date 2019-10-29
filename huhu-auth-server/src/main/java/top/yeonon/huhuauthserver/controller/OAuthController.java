@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yeonon.huhuauthserver.constant.Const;
-import top.yeonon.huhuauthserver.constant.ErrMessage;
 import top.yeonon.huhucommon.advice.annotation.IgnoreAdvice;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -36,7 +36,6 @@ public class OAuthController {
     @GetMapping("/current")
     @IgnoreAdvice
     public Principal getUser(Principal principal) {
-        System.out.println("验证用户");
         return principal;
     }
 
@@ -45,7 +44,8 @@ public class OAuthController {
     public void logout(HttpServletRequest request) throws HuhuException {
         String accessTokenWithBearer = request.getHeader(AUTH_HEADER);
         if (StringUtils.isEmpty(accessTokenWithBearer)) {
-            throw new HuhuException(ErrMessage.INVALID_TOKEN);
+            throw new HuhuException(ResponseCode.INVALID_TOKEN.getCode(),
+                    ResponseCode.INVALID_TOKEN.getDescription());
         }
         //Bearer加上一个空格一共7个字符
         consumerTokenServices.revokeToken(accessTokenWithBearer.substring(7));

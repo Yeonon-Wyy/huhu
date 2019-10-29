@@ -7,8 +7,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhucommon.utils.CommonUtils;
-import top.yeonon.huhuuserservice.constants.ErrMessage;
 import top.yeonon.huhuuserservice.interceptor.annotation.CheckId;
 import top.yeonon.huhuuserservice.properties.HuhuSecurityProperties;
 
@@ -48,7 +48,8 @@ public class CheckIdInterceptor implements HandlerInterceptor {
         //从请求头中获取Token
         String tokenWithBaraer = request.getHeader(AUTH_TOKEN);
         if (tokenWithBaraer == null) {
-            throw new HuhuException(ErrMessage.NOT_EXIST_TOKEN_IN_HEADER);
+            throw new HuhuException(ResponseCode.NOT_EXIST_TOKEN_IN_HEADER.getCode(),
+                    ResponseCode.NOT_EXIST_TOKEN_IN_HEADER.getDescription());
         }
         String token = request.getHeader(AUTH_TOKEN).substring(7);
         Claims body = CommonUtils.parseJwtToken(token, huhuSecurityProperties.getJwt().getSignKey());
@@ -59,7 +60,8 @@ public class CheckIdInterceptor implements HandlerInterceptor {
 
         //与传入的ID做比较，如果不相等，则抛出异常，表示横向越权操作
         if (!id.equals(tokenWithId)) {
-            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
+            throw new HuhuException(ResponseCode.NOT_ALLOW_ACTION.getCode(),
+                    ResponseCode.NOT_ALLOW_ACTION.getDescription());
         }
 
         return true;

@@ -11,7 +11,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhumailservice.constants.ErrMessage;
 import top.yeonon.huhumailservice.service.IMailService;
 import top.yeonon.huhumailservice.vo.TemplateMessageRequestVo;
 

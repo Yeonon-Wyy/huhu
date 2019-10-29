@@ -10,6 +10,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 
 
 import java.io.IOException;
@@ -85,7 +86,8 @@ public class CommonUtils {
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
                 ftpClient.disconnect();
                 log.error("上传文件失败");
-                throw new HuhuException("上传文件失败");
+                throw new HuhuException(ResponseCode.UPLOAD_FILE_ERROR.getCode(),
+                        ResponseCode.UPLOAD_FILE_ERROR.getDescription());
             }
 
             //包含"."
@@ -95,7 +97,8 @@ public class CommonUtils {
             boolean res = ftpClient.storeFile(newFilename, in);
             if (!res) {
                 log.error("上传文件失败");
-                throw new HuhuException("上传文件失败");
+                throw new HuhuException(ResponseCode.UPLOAD_FILE_ERROR.getCode(),
+                        ResponseCode.UPLOAD_FILE_ERROR.getDescription());
             }
             in.close();
             return ftpPath + newFilename;

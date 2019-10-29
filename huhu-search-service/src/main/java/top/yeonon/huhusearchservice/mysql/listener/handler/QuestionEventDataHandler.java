@@ -11,14 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
-import top.yeonon.huhusearchservice.constant.ErrMessage;
 import top.yeonon.huhusearchservice.constant.MysqlConst;
 import top.yeonon.huhusearchservice.entity.Question;
 import top.yeonon.huhusearchservice.mysql.listener.vo.Suggest;
@@ -137,7 +136,8 @@ public class QuestionEventDataHandler implements EventDataHandler {
         String title = (String) values.get(ElasticSearchConst.QA.SUGGEST_INPUT_KEY);
         Integer followerCount = (Integer) values.get(ElasticSearchConst.QA.SUGGEST_WEIGHT_KEY);
         if (title == null || followerCount == null) {
-            throw new HuhuException(ErrMessage.DATA_PARSE_ERROR);
+            throw new HuhuException(ResponseCode.DATA_PARSE_ERROR.getCode(),
+                    ResponseCode.DATA_PARSE_ERROR.getDescription());
         }
         Suggest suggest =  new Suggest(
                 title,

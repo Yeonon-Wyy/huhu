@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
                 e.getMessage());
 
         ServerResponse serverResponse = new ServerResponse();
-        serverResponse.setCode(ResponseCode.SERVICE_ERROR.getCode());
+        serverResponse.setCode(e.getCode());
         serverResponse.setMessage(message);
         return serverResponse;
     }

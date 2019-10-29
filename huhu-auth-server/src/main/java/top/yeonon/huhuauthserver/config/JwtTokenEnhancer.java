@@ -8,9 +8,9 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Component;
-import top.yeonon.huhuauthserver.constant.ErrMessage;
 import top.yeonon.huhuauthserver.entity.User;
 import top.yeonon.huhuauthserver.repository.UserRepository;
+import top.yeonon.huhucommon.response.ResponseCode;
 
 import java.util.Map;
 
@@ -30,7 +30,7 @@ public class JwtTokenEnhancer implements TokenEnhancer {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            log.error(ErrMessage.NOT_FOUND_USER);
+            log.error(ResponseCode.INVALID_USERNAME.getDescription());
             return accessToken;
         }
         Map<String, Object> info = Maps.newHashMap();

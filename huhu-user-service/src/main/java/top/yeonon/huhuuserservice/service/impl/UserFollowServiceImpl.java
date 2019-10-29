@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhuuserservice.constants.ErrMessage;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
 import top.yeonon.huhuuserservice.entity.UserFollower;
@@ -53,7 +53,8 @@ public class UserFollowServiceImpl implements IUserFollowService {
     public UserFollowResponseVo follow(UserFollowRequestVo request) throws HuhuException {
 
         if (request.getFollowUserId().equals(request.getUserId())) {
-            throw new HuhuException(ErrMessage.NOT_ALLOW_FOLLOW_YOURSELF);
+            throw new HuhuException(ResponseCode.NOT_ALLOW_FOLLOW_YOURSELF.getCode(),
+                    ResponseCode.NOT_ALLOW_FOLLOW_YOURSELF.getDescription());
         }
 
         //获取发起关注的用户对象
@@ -64,12 +65,14 @@ public class UserFollowServiceImpl implements IUserFollowService {
         if (followUser == null
                 || followedUser == null
                 || followedUser.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         //0. 先检查是否已经存在关注关系
         if (checkFollowRelation(followUser.getId(), followedUser.getId())) {
-            throw new HuhuException(ErrMessage.EXIST_FOLLOW_RELATION);
+            throw new HuhuException(ResponseCode.EXIST_FOLLOW_RELATION.getCode(),
+                    ResponseCode.EXIST_FOLLOW_RELATION.getDescription());
         }
 
         //1. 插入数据对user->follower 关联表中
@@ -102,12 +105,14 @@ public class UserFollowServiceImpl implements IUserFollowService {
 
         //检查是否是自己关注自己
         if (request.getUnFollowId().equals(request.getUserId())) {
-            throw new HuhuException(ErrMessage.NOT_ALLOW_UN_FOLLOW_YOURSELF);
+            throw new HuhuException(ResponseCode.NOT_ALLOW_UN_FOLLOW_YOURSELF.getCode(),
+                    ResponseCode.NOT_ALLOW_UN_FOLLOW_YOURSELF.getDescription());
         }
 
         //检查是否存在关注关系
         if (!checkFollowRelation(request.getUserId(), request.getUnFollowId())) {
-            throw new HuhuException(ErrMessage.NOT_EXIST_FOLLOW_RELATION);
+            throw new HuhuException(ResponseCode.NOT_EXIST_FOLLOW_RELATION.getCode(),
+                    ResponseCode.NOT_EXIST_FOLLOW_RELATION.getDescription());
         }
 
         //获取发起取消关注的用户对象
@@ -115,7 +120,8 @@ public class UserFollowServiceImpl implements IUserFollowService {
         //获取被取消关注的用户对象
         User unFollowedUser = userRepository.findById(request.getUnFollowId()).orElse(null);
         if (followUser == null || unFollowedUser == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         //1. 删除“关注我的人”表中的记录

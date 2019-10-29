@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhuqaservice.constant.CommentType;
-import top.yeonon.huhuqaservice.constant.ErrMessage;
 import top.yeonon.huhuqaservice.entity.AnswerComment;
 import top.yeonon.huhuqaservice.entity.Comment;
 import top.yeonon.huhuqaservice.entity.QuestionComment;
@@ -61,7 +61,8 @@ public class CommentServiceImpl implements ICommentService {
     public CommentCreateResponseVo createQuestionComment(QuestionCommentCreateRequestVo request) throws HuhuException {
 
         if (questionCommentRepository.existsByUserIdAndQuestionId(request.getUserId(), request.getQuestionId())) {
-            throw new HuhuException(ErrMessage.EXIST_SAME_QUESTION_COMMENT);
+            throw new HuhuException(ResponseCode.EXIST_SAME_QUESTION_COMMENT.getCode(),
+                    ResponseCode.EXIST_SAME_QUESTION_COMMENT.getDescription());
         }
 
         Comment comment = new Comment(
@@ -93,7 +94,8 @@ public class CommentServiceImpl implements ICommentService {
 
 
         if (answerCommentRepository.existsByUserIdAndAnswerId(request.getUserId(), request.getAnswerId())) {
-            throw new HuhuException(ErrMessage.EXIST_SAME_ANSWER_COMMENT);
+            throw new HuhuException(ResponseCode.EXIST_SAME_ANSWER_COMMENT.getCode(),
+                    ResponseCode.EXIST_SAME_ANSWER_COMMENT.getDescription());
         }
 
         Comment comment = new Comment(
@@ -122,7 +124,8 @@ public class CommentServiceImpl implements ICommentService {
     public CommentQueryAllResponseVo queryAllQuestionComment(QuestionCommentQueryAllRequestVo request) throws HuhuException {
 
         if (!questionRepository.existsById(request.getQuestionId())) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+            throw new HuhuException(ResponseCode.NOT_FOUND_QUESTION.getCode(),
+                    ResponseCode.NOT_FOUND_QUESTION.getDescription());
         }
 
 
@@ -167,7 +170,8 @@ public class CommentServiceImpl implements ICommentService {
 
 
         if (!answerRepository.existsById(request.getAnswerId())) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_ANSWER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_ANSWER.getCode(),
+                    ResponseCode.NOT_FOUND_ANSWER.getDescription());
         }
 
         List<Long> commentIdList = answerCommentRepository.findCommentIdByAnswerId(request.getAnswerId());

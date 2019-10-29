@@ -11,14 +11,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhucommon.utils.CommonUtils;
 import top.yeonon.huhuuserservice.client.HuhuMailClient;
 import top.yeonon.huhuuserservice.client.vo.RemoteForgetPassRequestVo;
 import top.yeonon.huhuuserservice.constants.Const;
-import top.yeonon.huhuuserservice.constants.ErrMessage;
 import top.yeonon.huhuuserservice.constants.UserStatus;
 import top.yeonon.huhuuserservice.entity.User;
 import top.yeonon.huhuuserservice.properties.HuhuFtpProperties;
@@ -63,7 +62,8 @@ public class UserServiceImpl implements IUserService {
     public UserRegisterResponseVo register(UserRegisterRequestVo request) throws HuhuException {
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new HuhuException(ErrMessage.EXIST_SAME_USERNAME);
+            throw new HuhuException(ResponseCode.EXIST_SAME_USERNAME.getCode(),
+                    ResponseCode.EXIST_SAME_USERNAME.getDescription());
         }
 
 
@@ -84,11 +84,13 @@ public class UserServiceImpl implements IUserService {
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         if (user.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrMessage.ALREADY_CLOSE_USER);
+            throw new HuhuException(ResponseCode.ALREADY_CLOSE_USER.getCode(),
+                    ResponseCode.ALREADY_CLOSE_USER.getDescription());
         }
 
         return new UserQueryResponseVo(
@@ -113,11 +115,13 @@ public class UserServiceImpl implements IUserService {
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         if (user.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrMessage.ALREADY_CLOSE_USER);
+            throw new HuhuException(ResponseCode.ALREADY_CLOSE_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         user = userRepository.save(request.updateUser(user));
@@ -127,19 +131,17 @@ public class UserServiceImpl implements IUserService {
     @Override
     @ParamValidate
     public UserDeleteResponseVo deleteUser(UserDeleteRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
-
 
         User user = userRepository.findById(request.getId()).orElse(null);
         if (user == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         //如果已经是处于注销状态，那么就不需要再次注销了
         if (user.getStatus().equals(UserStatus.CLOSE.getCode())) {
-            throw new HuhuException(ErrMessage.ALREADY_CLOSE_USER);
+            throw new HuhuException(ResponseCode.ALREADY_CLOSE_USER.getCode(),
+                    ResponseCode.ALREADY_CLOSE_USER.getDescription());
         }
 
         //仅仅修改状态，并不真正删除数据记录
@@ -154,9 +156,6 @@ public class UserServiceImpl implements IUserService {
     @Override
     @ParamValidate
     public UserBatchQueryResponseVo batchQueryUserInfo(UserBatchQueryRequestVo request) throws HuhuException {
-        if (!request.validate()) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
-        }
 
         //分页查询
         Sort sort = new Sort(Sort.Direction.ASC, "id");
@@ -197,7 +196,8 @@ public class UserServiceImpl implements IUserService {
     public void forgetPass(ForgetPassRequestVo request) throws HuhuException {
 
         if (!userRepository.existsByUsernameAndEmail(request.getUsername(), request.getEmail())) {
-            throw new HuhuException(ErrMessage.USERNAME_NOT_MATCH_EMAIL);
+            throw new HuhuException(ResponseCode.USERNAME_NOT_MATCH_EMAIL.getCode(),
+                    ResponseCode.USERNAME_NOT_MATCH_EMAIL.getDescription());
         }
 
         //存入redis
@@ -228,7 +228,8 @@ public class UserServiceImpl implements IUserService {
         );
 
         if (!validateCode.equals(redisValidateCode)) {
-            throw new HuhuException(ErrMessage.VALIDATE_CODE_ERROR);
+            throw new HuhuException(ResponseCode.VALIDATE_CODE_ERROR.getCode(),
+                    ResponseCode.VALIDATE_CODE_ERROR.getDescription());
         }
 
     }
@@ -243,7 +244,8 @@ public class UserServiceImpl implements IUserService {
 
         User user = userRepository.findByUsername(request.getUsername());
         if (user == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         user.setPassword(
@@ -284,7 +286,8 @@ public class UserServiceImpl implements IUserService {
 
         User user = userRepository.findById(request.getUserId()).orElse(null);
         if (user == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_USER);
+            throw new HuhuException(ResponseCode.NOT_FOUND_USER.getCode(),
+                    ResponseCode.NOT_FOUND_USER.getDescription());
         }
 
         BriefUserQueryResponseVo.BriefUserInfo briefUserInfo = new BriefUserQueryResponseVo.BriefUserInfo(

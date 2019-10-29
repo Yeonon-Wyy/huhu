@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhuqaservice.constant.ErrMessage;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhuqaservice.constant.QuestionStatus;
 import top.yeonon.huhuqaservice.entity.Question;
 import top.yeonon.huhuqaservice.entity.QuestionFollower;
@@ -57,7 +57,8 @@ public class QuestionServiceImpl implements IQuestionService {
     @Transactional
     public QuestionCreateResponseVo createQuestion(QuestionCreateRequestVo request) throws HuhuException {
         if (questionRepository.existsByTitle(request.getTitle())) {
-            throw new HuhuException(ErrMessage.EXIST_SAME_TITLE);
+            throw new HuhuException(ResponseCode.EXIST_SAME_TITLE.getCode(),
+                    ResponseCode.EXIST_SAME_TITLE.getDescription());
         }
 
         //插入数据
@@ -92,7 +93,8 @@ public class QuestionServiceImpl implements IQuestionService {
 
         Question question = questionRepository.findById(request.getId()).orElse(null);
         if (question == null) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+            throw new HuhuException(ResponseCode.NOT_FOUND_QUESTION.getCode(),
+                    ResponseCode.NOT_FOUND_QUESTION.getDescription());
         }
 
 
@@ -116,11 +118,13 @@ public class QuestionServiceImpl implements IQuestionService {
         Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
         if (question == null
                 || question.getStatus() >= QuestionStatus.CLOSE.getCode()) {
-            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
+            throw new HuhuException(ResponseCode.NOT_ALLOW_ACTION.getCode(),
+                    ResponseCode.NOT_ALLOW_ACTION.getDescription());
         }
 
         if (questionRepository.existsByTitle(request.getTitle())) {
-            throw new HuhuException(ErrMessage.EXIST_SAME_TITLE);
+            throw new HuhuException(ResponseCode.EXIST_SAME_TITLE.getCode(),
+                    ResponseCode.EXIST_SAME_TITLE.getDescription());
         }
 
         question = request.update(question);
@@ -138,7 +142,8 @@ public class QuestionServiceImpl implements IQuestionService {
         Question question = questionRepository.findByIdAndUserId(request.getId(), request.getUserId());
         if (question == null
                 || question.getStatus() == QuestionStatus.CLOSE.getCode()) {
-            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
+            throw new HuhuException(ResponseCode.NOT_ALLOW_ACTION.getCode(),
+                    ResponseCode.NOT_ALLOW_ACTION.getDescription());
         }
 
         question.setStatus(QuestionStatus.CLOSE.getCode());
@@ -186,14 +191,16 @@ public class QuestionServiceImpl implements IQuestionService {
 
 
         if (!questionRepository.existsById(request.getQuestionId())) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+            throw new HuhuException(ResponseCode.NOT_FOUND_QUESTION.getCode(),
+                    ResponseCode.NOT_FOUND_QUESTION.getDescription());
         }
 
         QuestionFollower questionFollower = questionFollowerRepository.findByQuestionIdAndFollowerId(
                 request.getQuestionId(),
                 request.getUserId());
         if (questionFollower != null) {
-            throw new HuhuException(ErrMessage.EXIST_QUESTION_FOLLOWER);
+            throw new HuhuException(ResponseCode.EXIST_QUESTION_FOLLOWER.getCode(),
+                    ResponseCode.EXIST_QUESTION_FOLLOWER.getDescription());
         }
 
         questionFollower = new QuestionFollower(
@@ -214,14 +221,16 @@ public class QuestionServiceImpl implements IQuestionService {
     public void unFollowQuestion(QuestionUnFollowRequestVo request) throws HuhuException {
 
         if (!questionRepository.existsById(request.getQuestionId())) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+            throw new HuhuException(ResponseCode.NOT_FOUND_QUESTION.getCode(),
+                    ResponseCode.NOT_FOUND_QUESTION.getDescription());
         }
 
         QuestionFollower questionFollower = questionFollowerRepository.findByQuestionIdAndFollowerId(
                 request.getQuestionId(),
                 request.getUserId());
         if (questionFollower == null) {
-            throw new HuhuException(ErrMessage.NOT_EXIST_QUESTION_FOLLOWER);
+            throw new HuhuException(ResponseCode.NOT_EXIST_QUESTION_FOLLOWER.getCode(),
+                    ResponseCode.NOT_EXIST_QUESTION_FOLLOWER.getDescription());
         }
 
         //删除记录

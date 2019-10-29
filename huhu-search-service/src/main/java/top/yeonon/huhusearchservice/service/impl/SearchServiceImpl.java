@@ -14,8 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhusearchservice.constant.ElasticSearchConst;
-import top.yeonon.huhusearchservice.constant.ErrMessage;
 import top.yeonon.huhusearchservice.entity.Answer;
 import top.yeonon.huhusearchservice.entity.Question;
 import top.yeonon.huhusearchservice.entity.User;
@@ -239,7 +239,7 @@ public class SearchServiceImpl implements ISearchService {
         try {
             response = searchRequestBuilder.execute().get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new HuhuException(e.getMessage());
+            throw new HuhuException(ResponseCode.SERVICE_ERROR.getCode(), e.getMessage());
         }
         return response.getSuggest().getSuggestion(suggestName);
     }

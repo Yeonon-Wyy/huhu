@@ -1,7 +1,7 @@
 package top.yeonon.huhusearchservice.util;
 
 import top.yeonon.huhucommon.exception.HuhuException;
-import top.yeonon.huhusearchservice.constant.ErrMessage;
+import top.yeonon.huhucommon.response.ResponseCode;
 
 /**
  * @Author yeonon
@@ -18,7 +18,8 @@ public class SearchUtils {
     public static String getHostFromJdbcUrl(String url) throws HuhuException {
         String[] str = url.split("/");
         if (str.length < 3) {
-            throw new HuhuException(ErrMessage.PARSE_MYSQL_URL_ERROR);
+            throw new HuhuException(ResponseCode.MYSQL_URL_PARSE__ERROR.getCode(),
+                    ResponseCode.MYSQL_URL_PARSE__ERROR.getDescription());
         }
         return str[2].split(":")[0];
     }
@@ -32,7 +33,8 @@ public class SearchUtils {
     public static Integer getPortFromJdbcUrl(String url) throws HuhuException {
         String[] str = url.split("/");
         if (str.length < 3) {
-            throw new HuhuException(ErrMessage.PARSE_MYSQL_URL_ERROR);
+            throw new HuhuException(ResponseCode.MYSQL_URL_PARSE__ERROR.getCode(),
+                    ResponseCode.MYSQL_URL_PARSE__ERROR.getDescription());
         }
         return Integer.parseInt(str[2].split(":")[1]);
     }

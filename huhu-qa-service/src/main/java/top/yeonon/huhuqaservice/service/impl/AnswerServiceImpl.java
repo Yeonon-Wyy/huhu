@@ -1,6 +1,5 @@
 package top.yeonon.huhuqaservice.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -15,11 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.yeonon.huhucommon.aop.ParamValidate;
 import top.yeonon.huhucommon.exception.HuhuException;
+import top.yeonon.huhucommon.response.ResponseCode;
 import top.yeonon.huhucommon.response.ServerResponse;
 import top.yeonon.huhuqaservice.client.HuhuUserClient;
 import top.yeonon.huhuqaservice.constant.AnswerStatus;
 import top.yeonon.huhuqaservice.constant.Const;
-import top.yeonon.huhuqaservice.constant.ErrMessage;
 import top.yeonon.huhuqaservice.entity.Answer;
 import top.yeonon.huhuqaservice.repository.AnswerRepository;
 import top.yeonon.huhuqaservice.repository.QuestionRepository;
@@ -67,12 +66,14 @@ public class AnswerServiceImpl implements IAnswerService {
 
 
         if (!questionRepository.existsById(request.getQuestionId())) {
-            throw new HuhuException(ErrMessage.NOT_FOUND_QUESTION);
+            throw new HuhuException(ResponseCode.NOT_FOUND_QUESTION.getCode(),
+                    ResponseCode.NOT_FOUND_QUESTION.getDescription());
         }
 
         Answer oldAnswer = answerRepository.findByUserIdAndQuestionId(request.getUserId(), request.getQuestionId());
         if (oldAnswer != null) {
-            throw new HuhuException(ErrMessage.EXIST_SAME_QUESTION_ANSWER);
+            throw new HuhuException(ResponseCode.EXIST_SAME_QUESTION_ANSWER.getCode(),
+                    ResponseCode.EXIST_SAME_QUESTION_ANSWER.getDescription());
         }
 
         Answer answer = new Answer(
@@ -140,14 +141,16 @@ public class AnswerServiceImpl implements IAnswerService {
             json = objectMapper.writeValueAsString(((LinkedHashMap) response.getData()).get("briefUserInfo"));
             AnswerBatchQueryResponseVo.BriefUserInfo userInfo = objectMapper.readValue(json, AnswerBatchQueryResponseVo.BriefUserInfo.class);
             if (userInfo == null) {
-                throw new HuhuException(ErrMessage.JSON_PARSE_ERROR);
+                throw new HuhuException(ResponseCode.JSON_PARSE_ERROR.getCode(),
+                        ResponseCode.JSON_PARSE_ERROR.getDescription());
             }
 
             userInfo.setQuestionCount(questionRepository.findCountByUserId(userId));
             userInfo.setAnswerCount(answerRepository.findCountByUserId(userId));
             return userInfo;
         } catch (IOException e) {
-            throw new HuhuException(ErrMessage.JSON_PARSE_ERROR);
+            throw new HuhuException(ResponseCode.JSON_PARSE_ERROR.getCode(),
+                    ResponseCode.JSON_PARSE_ERROR.getDescription());
         }
     }
 
@@ -159,7 +162,8 @@ public class AnswerServiceImpl implements IAnswerService {
         Answer answer = answerRepository.findByIdAndUserId(request.getId(), request.getUserId());
         if (answer == null
                 || answer.getStatus() >= AnswerStatus.CLOSE.getCode()) {
-            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
+            throw new HuhuException(ResponseCode.NOT_ALLOW_ACTION.getCode(),
+                    ResponseCode.NOT_ALLOW_ACTION.getDescription());
         }
 
         answer = request.update(answer);
@@ -176,7 +180,8 @@ public class AnswerServiceImpl implements IAnswerService {
         Answer answer = answerRepository.findByIdAndUserId(request.getId(), request.getUserId());
         if (answer == null
                 || answer.getStatus() == AnswerStatus.CLOSE.getCode()) {
-            throw new HuhuException(ErrMessage.NOT_ALLOW_ACTION);
+            throw new HuhuException(ResponseCode.NOT_ALLOW_ACTION.getCode(),
+                    ResponseCode.NOT_ALLOW_ACTION.getDescription());
         }
 
         answer.setStatus(AnswerStatus.CLOSE.getCode());
@@ -232,7 +237,8 @@ public class AnswerServiceImpl implements IAnswerService {
                 Const.RedisConst.ANSWER_APPROVAL_KEY + ":user:" + request.getUserId(),
                 request.getAnswerId().toString());
         if (index != null) {
-            throw new HuhuException(ErrMessage.ALREADY_APPROVAL_ANSWER);
+            throw new HuhuException(ResponseCode.ALREADY_APPROVAL_ANSWER.getCode(),
+                    ResponseCode.ALREADY_APPROVAL_ANSWER.getDescription());
         }
         Double scoreDelta = 1.0;
         //直接调用increment操作即可，如果redis中不存在key或者member都会直接添加
@@ -255,7 +261,8 @@ public class AnswerServiceImpl implements IAnswerService {
                 request.getAnswerId().toString()
         );
         if (currentApprovalCount == null) {
-            throw new HuhuException(ErrMessage.REQUEST_PARAM_ERROR);
+            throw new HuhuException(ResponseCode.REQUEST_PARAM_ERROR.getCode(),
+                    ResponseCode.REQUEST_PARAM_ERROR.getDescription());
         }
         return new AnswerApprovalResponseVo(
                 request.getAnswerId(),

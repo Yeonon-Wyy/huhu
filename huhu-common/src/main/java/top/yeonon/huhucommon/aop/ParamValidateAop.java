@@ -5,9 +5,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-import top.yeonon.huhucommon.constant.CommonErrorMessage;
 import top.yeonon.huhucommon.exception.HuhuException;
 import top.yeonon.huhucommon.request.RequestVo;
+import top.yeonon.huhucommon.response.ResponseCode;
 
 /**
  * @author: yeonon
@@ -28,7 +28,8 @@ public class ParamValidateAop {
             if (arg instanceof RequestVo) {
                 RequestVo requestVo = (RequestVo)arg;
                     if (!requestVo.validate()) {
-                    throw new HuhuException(CommonErrorMessage.REQUEST_PARAM_ERROR);
+                    throw new HuhuException(ResponseCode.REQUEST_PARAM_ERROR.getCode(),
+                            ResponseCode.REQUEST_PARAM_ERROR.getDescription());
                 }
             }
         }
