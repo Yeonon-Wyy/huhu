@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-elasticsearch</artifactId>
-            <version>3.0.6.RELEASE</version>
+            <version>3.2.0.RELEASE</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.github.shyiko/mysql-binlog-connector-java -->

@@ -14,18 +14,22 @@ public class ElasticSearchConst {
 
     public static final String COMPOSITE_SUGGEST_NAME = "composite_suggest";
 
-    public static class QA {
+    public static class Question {
         public static final String INDEX_NAME = "huhu-qa";
 
-        public static final String QUESTION_TYPE_NAME = "question";
-
-        public static final String ANSWER_TYPE_NAME = "answer";
+        public static final String TYPE_NAME = "question";
 
         public static final String SUGGEST_INPUT_KEY = "title";
 
         public static final String SUGGEST_WEIGHT_KEY = "followerCount";
 
         public static final String SUGGEST_NAME = "question-title-suggest";
+    }
+
+    public static class Answer {
+        public static final String INDEX_NAME = "huhu-answer";
+
+        public static final String TYPE_NAME = "answer";
     }
 
     public static class User {

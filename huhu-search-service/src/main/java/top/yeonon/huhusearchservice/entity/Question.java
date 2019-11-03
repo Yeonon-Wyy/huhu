@@ -17,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Document(indexName = ElasticSearchConst.QA.INDEX_NAME, type = ElasticSearchConst.QA.QUESTION_TYPE_NAME)
+@Document(indexName = ElasticSearchConst.Question.INDEX_NAME, type = ElasticSearchConst.Question.TYPE_NAME)
 public class Question {
 
     @Id

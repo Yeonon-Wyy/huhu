@@ -13,7 +13,6 @@ public class HuhuSearchServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(HuhuSearchServiceApplication.class, args);
-
     }
 
 }
